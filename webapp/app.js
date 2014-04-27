@@ -10,7 +10,8 @@ var express = require('express')
   , path = require('path');
 
 
-var fire_station = require('./fire_station');
+var fire_station = require('./fire_station'),
+    bike_station = require('./bike_station');
 
 var app = express();
 
@@ -31,7 +32,10 @@ app.configure('development', function(){
 });
 
 app.get('/assessment', function(req, res) {
-    res.end(JSON.stringify(fire_station.closest(req.query)));
+    res.end(JSON.stringify({
+        fire_station:fire_station.closest(req.query),
+        bike_station:bike_station.closest(req.query)
+    }));
 });
 
 app.get('/', routes.index);

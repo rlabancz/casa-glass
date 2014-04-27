@@ -14,15 +14,13 @@ csv().from.path(__dirname+'/data/fire_stations.csv').to.array(function(data) {
 
 exports.closest = function(query) {
 
-    var closest_distance, closest_station; 
+    var closest_station; 
 
 
     g_data.forEach(function(station) {
 
         var latlong = fn(station[2], station[1], 17);
         //console.log(latlong);
-
-        var here = {latitude:'43.660303', longitude:'-79.388653'};
 
         var distance = geolib.getDistance({latitude:query.latitude, longitude:query.longitude}, latlong);
 
@@ -35,8 +33,6 @@ exports.closest = function(query) {
         } 
         
     });
-
-    debugger;
 
     return {
         latitude:closest_station.latitude,
