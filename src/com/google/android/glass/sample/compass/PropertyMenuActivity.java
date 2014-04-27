@@ -61,30 +61,29 @@ public class PropertyMenuActivity extends Activity {
 	private Property mProperty;
 	Menu menu;
 	Card card;
-	
+
 	private List<Card> mCards;
 	private CardScrollView mCardScrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-        Log.d("PropertyMenuActivity", "inited");
+		Log.d("PropertyMenuActivity", "inited");
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.property_main);
+		// setContentView(R.layout.property_main);
 		mProperty = ActionParams.firstProperty;
 
-
-                getAdditionalInfo(mProperty);
-//		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
-///		TextView price = (TextView) findViewById(R.id.price);
-	//	price.setText(mProperty.getPrice());
-	//	background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
+		getAdditionalInfo(mProperty);
+		// RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
+		// / TextView price = (TextView) findViewById(R.id.price);
+		// price.setText(mProperty.getPrice());
+		// background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
 		mCards = new ArrayList<Card>();
-		
+
 		card = new Card(this);
 		card.setText(mProperty.getAddress());
 		card.setFootnote(mProperty.getPrice());
 		mCards.add(card);
-		
+
 		createCards();
 
 		mCardScrollView = new CardScrollView(this);
@@ -105,11 +104,6 @@ public class PropertyMenuActivity extends Activity {
 	}
 
 	private void createCards() {
-	
-
-	
-
-	
 
 		card = new Card(this);
 		card.setText("This card has a puppy background image.");
@@ -226,47 +220,44 @@ public class PropertyMenuActivity extends Activity {
 		finish();
 	}
 
-    private void getAdditionalInfo(Property property) {
-        new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude="+property.getLat()+"&longitude="+property.getLng());
+	private void getAdditionalInfo(Property property) {
+		new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude=" + property.getLat() + "&longitude="
+				+ property.getLng());
 
+	}
 
-    }
+	private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
+		@Override
+		protected String doInBackground(Object... params) {
+			HttpClient httpClient = new DefaultHttpClient();
+			String textv = "";
+			BufferedReader in = null;
+			String url = (String) params[1];
+			HttpGet request = new HttpGet(url);
+			try {
+				HttpResponse response = httpClient.execute(request);
+				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-    private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
-        @Override
-        protected String doInBackground(Object... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            String textv = "";
-            BufferedReader in = null;
-            String url = (String)params[1];
-            HttpGet request = new HttpGet(url);
-            try {
-                HttpResponse response = httpClient.execute(request);
-                in = new BufferedReader(new InputStreamReader(
-                        response.getEntity().getContent()));
+				// NEW CODE
+				String l = "";
+				while ((l = in.readLine()) != null) {
+					textv += l;
+				}
 
-                // NEW CODE
-                String l = "";
-                while ((l = in.readLine()) != null) {
-                    textv+= l;
-                }
+				Log.d("PropertyMenuActivity", "textv : " + textv);
+				try {
+					JSONObject obj = new JSONObject(textv);
+					JSONObject fireStation = obj.getJSONObject("fire_station");
+					int distance = fireStation.getInt("distance");
+					Log.d("PropertyMenuActivity", "firstation distance : " + distance);
+				} catch (JSONException e) {
+					e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+				}
 
-
-                Log.d("PropertyMenuActivity", "textv : "+textv);
-                try {
-                    JSONObject obj = new JSONObject(textv);
-                    JSONObject fireStation = obj.getJSONObject("fire_station");
-                    int distance = fireStation.getInt("distance");
-                    Log.d("PropertyMenuActivity", "firstation distance : " + distance);
-                } catch (JSONException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            return textv;
-
-        }
-    }
+			} catch (IOException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
+			return textv;
+		}
+	}
 }
