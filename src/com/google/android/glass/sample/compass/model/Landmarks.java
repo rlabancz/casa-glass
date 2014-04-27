@@ -16,7 +16,6 @@
 
 package com.google.android.glass.sample.compass.model;
 
-import com.google.android.glass.sample.compass.ActionParams;
 import com.google.android.glass.sample.compass.R;
 import com.google.android.glass.sample.compass.util.MathUtils;
 import com.google.android.glass.sample.compass.util.ResultCodes;
@@ -94,7 +93,8 @@ public class Landmarks {
      * empty list will be returned.
      */
     public List<Place> getNearbyLandmarks(double latitude, double longitude, int results) {
-    	
+
+        mPlaces.clear();
     	new SendDataAsync().execute(this, latitude, longitude, results);
     	Log.d(TAG, "got places");
     
@@ -108,13 +108,56 @@ public class Landmarks {
     		Log.d(TAG, "size: " + Integer.toString(size));
     		for (int i = 0; i < size; i++) {
     			property = properties.get(i);
-    			ActionParams.firstProperty = property;
     			Log.d(TAG, "adding " + property.getAddress());
     			mPlaces.add(new Place(property.getLat(), property.getLng(), property.getAddress()));
     		}
+ 
+    	
         return mPlaces;
     }
 
+    /**
+     * Gets a list of landmarks that are within ten kilometers of the specified coordinates. This
+     * function will never return null; if there are no locations within that threshold, then an
+     * empty list will be returned.
+     */
+    /*
+    public List<Place> getNearbyLandmarks(double latitude, double longitude) {
+        ArrayList<Place> nearbyPlaces = new ArrayList<Place>();
+
+        for (Place knownPlace : mPlaces) {
+            if (MathUtils.getDistance(latitude, longitude,
+                    knownPlace.getLatitude(), knownPlace.getLongitude()) <= MAX_DISTANCE_KM) {
+                nearbyPlaces.add(knownPlace);
+            }
+        }
+
+        return nearbyPlaces;
+    }
+*/
+    /**
+     * Populates the internal places list from places found in a JSON string. This string should
+     * contain a root object with a "landmarks" property that is an array of objects that represent
+     * places. A place has three properties: name, latitude, and longitude.
+     */
+    private void populatePlaceList(String jsonString) {
+        try {
+            JSONObject json = new JSONObject(jsonString);
+            JSONArray array = json.optJSONArray("landmarks");
+
+            if (array != null) {
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject object = array.optJSONObject(i);
+                    Place place = jsonObjectToPlace(object);
+                    if (place != null) {
+                        mPlaces.add(place);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Could not parse landmarks JSON string", e);
+        }
+    }
 
     /**
      * Converts a JSON object that represents a place into a {@link Place} object.
@@ -222,7 +265,7 @@ public class SendDataAsync extends AsyncTask<Object, Boolean, String> {
 			String responseCode = sL.toString();
 			Log.d(TAG, responseCode);
 			if (responseCode.contains("200")) {
-				ResponseHandler handler = new BasicResponseHandler();
+				ResponseHandler<String> handler = new BasicResponseHandler();
 				data = httpClient.execute(httpGet, handler);
 				return data;
 			} else {
