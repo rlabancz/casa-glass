@@ -9,6 +9,9 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
+
+var fire_station = require('./fire_station');
+
 var app = express();
 
 app.configure(function(){
@@ -25,6 +28,10 @@ app.configure(function(){
 
 app.configure('development', function(){
   app.use(express.errorHandler());
+});
+
+app.get('/assessment', function(req, res) {
+    res.end(JSON.stringify(fire_station.closest(req.query)));
 });
 
 app.get('/', routes.index);
