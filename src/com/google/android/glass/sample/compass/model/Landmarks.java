@@ -77,13 +77,14 @@ public class Landmarks {
     public Landmarks(Context context) {
         mPlaces = new ArrayList<Place>();
 
+		properties = new ArrayList<Property>();
         // This class will be instantiated on the service's main thread, and doing I/O on the
         // main thread can be dangerous if it will block for a noticeable amount of time. In
         // this case, we assume that the landmark data will be small enough that there is not
         // a significant penalty to the application. If the landmark data were much larger,
         // we may want to load it in the background instead.
-        String jsonString = readLandmarksResource(context);
-        populatePlaceList(jsonString);
+        //String jsonString = readLandmarksResource(context);
+    	new SendDataAsync().execute(this, 43.6609214, -79.3867236, 3);
     }
     
     /**
@@ -94,7 +95,7 @@ public class Landmarks {
     public List<Place> getNearbyLandmarks(double latitude, double longitude, int results) {
     	new SendDataAsync().execute(this, latitude, longitude, results);
     	Log.d(TAG, "got places");
-    	if (!properties.isEmpty()) {
+    
     		int size;
     		Property property;
     		if (properties.size() < results) {
@@ -108,7 +109,7 @@ public class Landmarks {
     			Log.d(TAG, "adding " + property.getAddress());
     			mPlaces.add(new Place(property.getLat(), property.getLng(), property.getAddress()));
     		}
-    	}
+ 
     	
         return mPlaces;
     }
@@ -118,6 +119,7 @@ public class Landmarks {
      * function will never return null; if there are no locations within that threshold, then an
      * empty list will be returned.
      */
+    /*
     public List<Place> getNearbyLandmarks(double latitude, double longitude) {
         ArrayList<Place> nearbyPlaces = new ArrayList<Place>();
 
@@ -130,7 +132,7 @@ public class Landmarks {
 
         return nearbyPlaces;
     }
-
+*/
     /**
      * Populates the internal places list from places found in a JSON string. This string should
      * contain a root object with a "landmarks" property that is an array of objects that represent
@@ -170,38 +172,7 @@ public class Landmarks {
         }
     }
 
-    /**
-     * Reads the text from {@code res/raw/landmarks.json} and returns it as a string.
-     */
-    private static String readLandmarksResource(Context context) {
-        InputStream is = context.getResources().openRawResource(R.raw.landmarks);
-        StringBuffer buffer = new StringBuffer();
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line);
-                buffer.append('\n');
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Could not read landmarks resource", e);
-            return null;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Could not close landmarks resource stream", e);
-                }
-            }
-        }
-
-        return buffer.toString();
-    }
-    
-    
+ 
     
 
 public class SendDataAsync extends AsyncTask<Object, Boolean, String> {
@@ -224,7 +195,6 @@ public class SendDataAsync extends AsyncTask<Object, Boolean, String> {
 
 	@Override
 	protected void onPreExecute() {
-		properties = new ArrayList<Property>();
 		super.onPreExecute();
 	}
 
