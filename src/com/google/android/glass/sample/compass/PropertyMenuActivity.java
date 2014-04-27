@@ -46,6 +46,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This activity manages the options menu that appears when the user taps on the compass's live card.
@@ -71,7 +73,7 @@ public class PropertyMenuActivity extends Activity {
 		mProperty = ActionParams.firstProperty;
 
 
-                getAdditionalInfo();
+                getAdditionalInfo(mProperty);
 //		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
 ///		TextView price = (TextView) findViewById(R.id.price);
 	//	price.setText(mProperty.getPrice());
@@ -224,8 +226,8 @@ public class PropertyMenuActivity extends Activity {
 		finish();
 	}
 
-    private void getAdditionalInfo() {
-        new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude=43.758721&longitude=-79.370369");
+    private void getAdditionalInfo(Property property) {
+        new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude="+property.getLat()+"&longitude="+property.getLng());
 
 
     }
@@ -251,6 +253,15 @@ public class PropertyMenuActivity extends Activity {
 
 
                 Log.d("PropertyMenuActivity", "textv : "+textv);
+                try {
+                    JSONObject obj = new JSONObject(textv);
+                    JSONObject fireStation = obj.getJSONObject("fire_station");
+                    int distance = fireStation.getInt("distance");
+                    Log.d("PropertyMenuActivity", "firstation distance : " + distance);
+                } catch (JSONException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
