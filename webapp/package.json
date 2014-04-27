@@ -10,7 +10,8 @@
     "jade": "~0.34.0",
     "coordinator":"*",
     "csv":"*",
-    "geolib":"*"
+    "geolib":"*",
+    "shapefile":"*"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

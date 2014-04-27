@@ -11,7 +11,8 @@ var express = require('express')
 
 
 var fire_station = require('./fire_station'),
-    bike_station = require('./bike_station');
+    bike_station = require('./bike_station'),
+    school = require('./school');
 
 var app = express();
 
@@ -34,7 +35,8 @@ app.configure('development', function(){
 app.get('/assessment', function(req, res) {
     res.end(JSON.stringify({
         fire_station:fire_station.closest(req.query),
-        bike_station:bike_station.closest(req.query)
+        bike_station:bike_station.closest(req.query),
+        school:school.closest(req.query)
     }));
 });
 
