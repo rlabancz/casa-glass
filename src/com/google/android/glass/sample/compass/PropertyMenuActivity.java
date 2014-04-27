@@ -83,6 +83,13 @@ public class PropertyMenuActivity extends Activity {
 		card.setText(mProperty.getAddress());
 		card.setFootnote(mProperty.getPrice());
 		mCards.add(card);
+		
+		card = new Card(this);
+		card.setText(mProperty.getBedrooms() + " / " + mProperty.getBathrooms());
+		card.setFootnote("Bedrooms / Bathrooms");
+		card.setImageLayout(Card.ImageLayout.FULL);
+		// card.addImage(R.drawable.puppy_bg);
+		mCards.add(card);
 
 		createCards();
 

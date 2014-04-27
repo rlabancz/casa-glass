@@ -305,9 +305,9 @@ public class Landmarks {
 					double lat = obj.getDouble("Latitude");
 					double lng = obj.getDouble("Longitude");
 					String picture = obj.getString("PropertyImagePath");
-
-
-					properties.add(new Property(address, price, lat, lng, picture));
+					String bedroom = obj.getString("Bedrooms");
+					String bathroom = obj.getString("Bathrooms");
+					properties.add(new Property(address, price, lat, lng, picture, bedroom, bathroom));
 				}
 
 				Log.d("MLS", "done parsing");
