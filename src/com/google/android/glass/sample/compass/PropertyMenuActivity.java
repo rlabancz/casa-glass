@@ -25,10 +25,19 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
+import java.util.StringTokenizer;
 
 import com.google.android.glass.sample.compass.model.Property;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 /**
  * This activity manages the options menu that appears when the user taps on the compass's live card.
@@ -44,6 +53,7 @@ public class PropertyMenuActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        Log.d("PropertyMenuActivity", "inited");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.property_main);
 		mProperty = ActionParams.firstProperty;
@@ -52,6 +62,8 @@ public class PropertyMenuActivity extends Activity {
 		TextView price = (TextView) findViewById(R.id.price);
 		price.setText(mProperty.getPrice());
 		background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
+
+        getAdditionalInfo();
 	}
 
 	public static Drawable LoadImageFromWebOperations(String url) {
@@ -121,4 +133,27 @@ public class PropertyMenuActivity extends Activity {
 		// item is selected from the menu or when the menu is dismissed by swiping down.
 		finish();
 	}
+
+    private void getAdditionalInfo() {
+        HttpClient httpClient = new DefaultHttpClient();
+        String textv = "";
+        BufferedReader in = null;
+        HttpGet request = new HttpGet("http://conversationboard.com:8019/assessment?latitude=43.758721&longitude=-79.370369");
+        try {
+            HttpResponse response = httpClient.execute(request);
+            in = new BufferedReader(new InputStreamReader(
+                    response.getEntity().getContent()));
+
+            // NEW CODE
+            String l = "";
+            while ((l = in.readLine()) != null) {
+                textv+= l;
+            }
+
+
+            Log.d("PropertyMenuActivity", "textv : "+textv);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 }
