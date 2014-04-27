@@ -17,8 +17,6 @@
 package com.google.android.glass.sample.compass;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,22 +25,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.glass.app.Card;
 import com.google.android.glass.sample.compass.model.Property;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This activity manages the options menu that appears when the user taps on the compass's live card.
@@ -56,37 +61,30 @@ public class PropertyMenuActivity extends Activity {
 	private Property mProperty;
 	Menu menu;
 	Card card;
-Card primaryCard;
-	
 	
 	private List<Card> mCards;
 	private CardScrollView mCardScrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        Log.d("PropertyMenuActivity", "inited");
 		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.property_main);
+		//setContentView(R.layout.property_main);
 		mProperty = ActionParams.firstProperty;
 
-		// RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
-		// / TextView price = (TextView) findViewById(R.id.price);
-		// price.setText(mProperty.getPrice());
-		// background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
+
+                getAdditionalInfo(mProperty);
+//		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
+///		TextView price = (TextView) findViewById(R.id.price);
+	//	price.setText(mProperty.getPrice());
+	//	background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
 		mCards = new ArrayList<Card>();
-
-		primaryCard = new Card(this);
-		primaryCard.setText(mProperty.getAddress());
-		primaryCard.setFootnote(mProperty.getPrice());
-		primaryCard.setImageLayout(Card.ImageLayout.LEFT);
-		mCards.add(primaryCard);
 		
-	
-		ImageView mChart = new ImageView(this);
-		String URL = (mProperty.getPicture());
-		mChart.setTag(URL);
-		new DownloadImagesTask().execute(mChart);
+		card = new Card(this);
+		card.setText(mProperty.getAddress());
+		card.setFootnote(mProperty.getPrice());
+		mCards.add(card);
 		
-
 		createCards();
 
 		mCardScrollView = new CardScrollView(this);
@@ -96,41 +94,23 @@ Card primaryCard;
 		setContentView(mCardScrollView);
 	}
 
-	public class DownloadImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
-		ImageView imageView = null;
-
-		@Override
-		protected Bitmap doInBackground(ImageView... imageViews) {
-			Log.d("Landmarks", "getting picture");
-			this.imageView = imageViews[0];
-			return download_Image((String) imageView.getTag());
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			primaryCard.addImage(result);
-			//imageView.setImageBitmap(result);
-		}
-
-		private Bitmap download_Image(String url) {
-			Bitmap bm = null;
-			try {
-				URL aURL = new URL(url);
-				URLConnection conn = aURL.openConnection();
-				conn.connect();
-				InputStream is = conn.getInputStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				bm = BitmapFactory.decodeStream(bis);
-				bis.close();
-				is.close();
-			} catch (IOException e) {
-				Log.e("Landmarks", "Error getting the image from server : " + e.getMessage().toString());
-			}
-			return bm;
+	public static Drawable LoadImageFromWebOperations(String url) {
+		try {
+			InputStream is = (InputStream) new URL(url).getContent();
+			Drawable d = Drawable.createFromStream(is, "src name");
+			return d;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
 	private void createCards() {
+	
+
+	
+
+	
+
 		card = new Card(this);
 		card.setText("This card has a puppy background image.");
 		card.setFootnote("How can you resist?");
@@ -245,4 +225,48 @@ Card primaryCard;
 		// item is selected from the menu or when the menu is dismissed by swiping down.
 		finish();
 	}
+
+    private void getAdditionalInfo(Property property) {
+        new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude="+property.getLat()+"&longitude="+property.getLng());
+
+
+    }
+
+    private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
+        @Override
+        protected String doInBackground(Object... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            String textv = "";
+            BufferedReader in = null;
+            String url = (String)params[1];
+            HttpGet request = new HttpGet(url);
+            try {
+                HttpResponse response = httpClient.execute(request);
+                in = new BufferedReader(new InputStreamReader(
+                        response.getEntity().getContent()));
+
+                // NEW CODE
+                String l = "";
+                while ((l = in.readLine()) != null) {
+                    textv+= l;
+                }
+
+
+                Log.d("PropertyMenuActivity", "textv : "+textv);
+                try {
+                    JSONObject obj = new JSONObject(textv);
+                    JSONObject fireStation = obj.getJSONObject("fire_station");
+                    int distance = fireStation.getInt("distance");
+                    Log.d("PropertyMenuActivity", "firstation distance : " + distance);
+                } catch (JSONException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            return textv;
+
+        }
+    }
 }

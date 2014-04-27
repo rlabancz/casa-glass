@@ -306,6 +306,7 @@ public class Landmarks {
 					double lng = obj.getDouble("Longitude");
 					String picture = obj.getString("PropertyImagePath");
 
+
 					properties.add(new Property(address, price, lat, lng, picture));
 				}
 
