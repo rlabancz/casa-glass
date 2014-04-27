@@ -22,6 +22,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,12 +34,17 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.google.android.glass.app.Card;
 import com.google.android.glass.sample.compass.model.Property;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardScrollView;
 
 /**
  * This activity manages the options menu that appears when the user taps on the compass's live card.
@@ -50,20 +57,38 @@ public class PropertyMenuActivity extends Activity {
 
 	private Property mProperty;
 	Menu menu;
+	Card card;
+	
+	private List<Card> mCards;
+	private CardScrollView mCardScrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         Log.d("PropertyMenuActivity", "inited");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.property_main);
+		//setContentView(R.layout.property_main);
 		mProperty = ActionParams.firstProperty;
 
-		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
-		TextView price = (TextView) findViewById(R.id.price);
-		price.setText(mProperty.getPrice());
-		background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
 
-        getAdditionalInfo();
+                getAdditionalInfo();
+//		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
+///		TextView price = (TextView) findViewById(R.id.price);
+	//	price.setText(mProperty.getPrice());
+	//	background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
+		mCards = new ArrayList<Card>();
+		
+		card = new Card(this);
+		card.setText(mProperty.getAddress());
+		card.setFootnote(mProperty.getPrice());
+		mCards.add(card);
+		
+		createCards();
+
+		mCardScrollView = new CardScrollView(this);
+		ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
+		mCardScrollView.setAdapter(adapter);
+		mCardScrollView.activate();
+		setContentView(mCardScrollView);
 	}
 
 	public static Drawable LoadImageFromWebOperations(String url) {
@@ -76,6 +101,70 @@ public class PropertyMenuActivity extends Activity {
 		}
 	}
 
+	private void createCards() {
+	
+
+	
+
+	
+
+		card = new Card(this);
+		card.setText("This card has a puppy background image.");
+		card.setFootnote("How can you resist?");
+		card.setImageLayout(Card.ImageLayout.FULL);
+		// card.addImage(R.drawable.puppy_bg);
+		mCards.add(card);
+
+		card = new Card(this);
+		card.setText("This card has a mosaic of puppies.");
+		card.setFootnote("Aren't they precious?");
+		card.setImageLayout(Card.ImageLayout.LEFT);
+		// card.addImage(R.drawable.puppy_small_1);
+		// card.addImage(R.drawable.puppy_small_2);
+		// card.addImage(R.drawable.puppy_small_3);
+		mCards.add(card);
+	}
+
+	private class ExampleCardScrollAdapter extends CardScrollAdapter {
+
+		@Override
+		public int getPosition(Object item) {
+			return mCards.indexOf(item);
+		}
+
+		@Override
+		public int getCount() {
+			return mCards.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return mCards.get(position);
+		}
+
+		/**
+		 * Returns the amount of view types.
+		 */
+		@Override
+		public int getViewTypeCount() {
+			return Card.getViewTypeCount();
+		}
+
+		/**
+		 * Returns the view type of this card so the system can figure out if it can be recycled.
+		 */
+		@Override
+		public int getItemViewType(int position) {
+			return mCards.get(position).getItemViewType();
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			return mCards.get(position).getView(convertView, parent);
+		}
+	}
+
+	// Misc stuff
 	@Override
 	public void onAttachedToWindow() {
 		super.onAttachedToWindow();
