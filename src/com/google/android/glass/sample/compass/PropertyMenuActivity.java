@@ -73,7 +73,7 @@ public class PropertyMenuActivity extends Activity {
 		mProperty = ActionParams.firstProperty;
 
 
-                getAdditionalInfo(mProperty);
+
 //		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
 ///		TextView price = (TextView) findViewById(R.id.price);
 	//	price.setText(mProperty.getPrice());
@@ -125,7 +125,13 @@ public class PropertyMenuActivity extends Activity {
 		// card.addImage(R.drawable.puppy_small_1);
 		// card.addImage(R.drawable.puppy_small_2);
 		// card.addImage(R.drawable.puppy_small_3);
-		mCards.add(card);
+        mCards.add(card);
+
+
+        Card fireStationCard = new Card(this);
+        getAdditionalInfo(mProperty, fireStationCard);
+        mCards.add(fireStationCard);
+
 	}
 
 	private class ExampleCardScrollAdapter extends CardScrollAdapter {
@@ -226,13 +232,17 @@ public class PropertyMenuActivity extends Activity {
 		finish();
 	}
 
-    private void getAdditionalInfo(Property property) {
-        new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude="+property.getLat()+"&longitude="+property.getLng());
+    private void getAdditionalInfo(Property property, Card fireStationCard) {
+        new MyAsyncTask().execute(this,
+                "http://conversationboard.com:8019/assessment?latitude="+property.getLat()+"&longitude="+property.getLng(),
+                fireStationCard
+        );
 
 
     }
 
     private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
+        private Card fireStationCard;
         @Override
         protected String doInBackground(Object... params) {
             HttpClient httpClient = new DefaultHttpClient();
@@ -240,6 +250,7 @@ public class PropertyMenuActivity extends Activity {
             BufferedReader in = null;
             String url = (String)params[1];
             HttpGet request = new HttpGet(url);
+            fireStationCard = (Card)params[2];
             try {
                 HttpResponse response = httpClient.execute(request);
                 in = new BufferedReader(new InputStreamReader(
@@ -250,22 +261,27 @@ public class PropertyMenuActivity extends Activity {
                 while ((l = in.readLine()) != null) {
                     textv+= l;
                 }
-
-
-                Log.d("PropertyMenuActivity", "textv : "+textv);
-                try {
-                    JSONObject obj = new JSONObject(textv);
-                    JSONObject fireStation = obj.getJSONObject("fire_station");
-                    int distance = fireStation.getInt("distance");
-                    Log.d("PropertyMenuActivity", "firstation distance : " + distance);
-                } catch (JSONException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             return textv;
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String data) {
+            Log.d("PropertyMenuActivity", "data : "+data);
+            try {
+                JSONObject obj = new JSONObject(data);
+                JSONObject fireStation = obj.getJSONObject("fire_station");
+                int distance = fireStation.getInt("distance");
+                Log.d("PropertyMenuActivity", "firstation distance : " + distance);
+                fireStationCard.setText("Closest Firestation:\n"+distance+"m");
+
+            } catch (JSONException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
 
         }
     }
