@@ -293,7 +293,7 @@ public class SendDataAsync extends AsyncTask<Object, Boolean, String> {
 			String responseCode = sL.toString();
 			Log.d(TAG, responseCode);
 			if (responseCode.contains("200")) {
-				ResponseHandler handler = new BasicResponseHandler();
+				ResponseHandler<String> handler = new BasicResponseHandler();
 				data = httpClient.execute(httpGet, handler);
 				return data;
 			} else {
