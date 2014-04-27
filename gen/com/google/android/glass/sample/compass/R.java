@@ -27,23 +27,30 @@ public final class R {
         public static final int place_mark=0x7f020004;
     }
     public static final class id {
+        public static final int background=0x7f0a0003;
         public static final int compass=0x7f0a0000;
-        public static final int read_aloud=0x7f0a0003;
-        public static final int stop=0x7f0a0004;
+        public static final int open_place=0x7f0a0008;
+        public static final int price=0x7f0a0004;
+        public static final int read_aloud=0x7f0a0006;
+        public static final int stop=0x7f0a0007;
+        public static final int tip_tap_for_options=0x7f0a0005;
         public static final int tips_container=0x7f0a0001;
         public static final int tips_view=0x7f0a0002;
     }
     public static final class layout {
         public static final int compass=0x7f030000;
+        public static final int property_main=0x7f030001;
     }
     public static final class menu {
         public static final int compass=0x7f090000;
+        public static final int property=0x7f090001;
     }
     public static final class string {
         /**  Launch-related strings. 
          */
         public static final int app_name=0x7f060000;
         public static final int magnetic_interference=0x7f060005;
+        public static final int open=0x7f060008;
         /**  Warning messages. 
          */
         public static final int pitch_too_steep=0x7f060004;
