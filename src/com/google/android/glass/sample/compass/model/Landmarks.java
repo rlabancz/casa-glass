@@ -93,6 +93,8 @@ public class Landmarks {
      * empty list will be returned.
      */
     public List<Place> getNearbyLandmarks(double latitude, double longitude, int results) {
+
+        mPlaces.clear();
     	new SendDataAsync().execute(this, latitude, longitude, results);
     	Log.d(TAG, "got places");
     
