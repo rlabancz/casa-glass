@@ -37,16 +37,16 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The surface callback that provides the rendering logic for the compass live card. This callback also manages the lifetime of the sensor and
- * location event listeners (through {@link OrientationManager}) so that tracking only occurs when the card is visible.
+ * The surface callback that provides the rendering logic for the compass live card. This callback also manages the lifetime of the sensor
+ * and location event listeners (through {@link OrientationManager}) so that tracking only occurs when the card is visible.
  */
 public class CompassRenderer implements DirectRenderingCallback {
 
 	private static final String TAG = CompassRenderer.class.getSimpleName();
 
 	/**
-	 * The (absolute) pitch angle beyond which the compass will display a message telling the user that his or her head is at too steep an angle to be
-	 * reliable.
+	 * The (absolute) pitch angle beyond which the compass will display a message telling the user that his or her head is at too steep an
+	 * angle to be reliable.
 	 */
 	private static final float TOO_STEEP_PITCH_DEGREES = 70.0f;
 
@@ -88,13 +88,15 @@ public class CompassRenderer implements DirectRenderingCallback {
 		@Override
 		public void onLocationChanged(OrientationManager orientationManager) {
 			Location location = orientationManager.getLocation();
-			List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude());
+			Log.d(TAG, "onLocationChanged");
+			List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
 			mCompassView.setNearbyPlaces(places);
 		}
 
 		@Override
 		public void onAccuracyChanged(OrientationManager orientationManager) {
 			mInterference = orientationManager.hasInterference();
+			Log.d(TAG, "onAccuracyChanged");
 			updateTipsView();
 		}
 	};
@@ -158,7 +160,8 @@ public class CompassRenderer implements DirectRenderingCallback {
 
 				if (mOrientationManager.hasLocation()) {
 					Location location = mOrientationManager.getLocation();
-					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude());
+					Log.d(TAG, "updateRenderingState");
+					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
 					mCompassView.setNearbyPlaces(nearbyPlaces);
 				}
 
@@ -176,8 +179,8 @@ public class CompassRenderer implements DirectRenderingCallback {
 	}
 
 	/**
-	 * Requests that the views redo their layout. This must be called manually every time the tips view's text is updated because this layout doesn't
-	 * exist in a GUI thread where those requests will be enqueued automatically.
+	 * Requests that the views redo their layout. This must be called manually every time the tips view's text is updated because this
+	 * layout doesn't exist in a GUI thread where those requests will be enqueued automatically.
 	 */
 	private void doLayout() {
 		// Measure and update the layout so that it will take up the entire surface space
