@@ -18,6 +18,7 @@ package com.google.android.glass.sample.compass;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -224,25 +225,37 @@ public class PropertyMenuActivity extends Activity {
 	}
 
     private void getAdditionalInfo() {
-        HttpClient httpClient = new DefaultHttpClient();
-        String textv = "";
-        BufferedReader in = null;
-        HttpGet request = new HttpGet("http://conversationboard.com:8019/assessment?latitude=43.758721&longitude=-79.370369");
-        try {
-            HttpResponse response = httpClient.execute(request);
-            in = new BufferedReader(new InputStreamReader(
-                    response.getEntity().getContent()));
+        new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude=43.758721&longitude=-79.370369");
 
-            // NEW CODE
-            String l = "";
-            while ((l = in.readLine()) != null) {
-                textv+= l;
+
+    }
+
+    private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
+        @Override
+        protected String doInBackground(Object... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            String textv = "";
+            BufferedReader in = null;
+            String url = (String)params[1];
+            HttpGet request = new HttpGet(url);
+            try {
+                HttpResponse response = httpClient.execute(request);
+                in = new BufferedReader(new InputStreamReader(
+                        response.getEntity().getContent()));
+
+                // NEW CODE
+                String l = "";
+                while ((l = in.readLine()) != null) {
+                    textv+= l;
+                }
+
+
+                Log.d("PropertyMenuActivity", "textv : "+textv);
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+            return textv;
 
-
-            Log.d("PropertyMenuActivity", "textv : "+textv);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 }
