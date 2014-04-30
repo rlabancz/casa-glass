@@ -25,6 +25,7 @@ public class Place {
     private final double mLatitude;
     private final double mLongitude;
     private final String mName;
+    private final String mPrice;
 
     /**
      * Initializes a new place with the specified coordinates and name.
@@ -33,10 +34,11 @@ public class Place {
      * @param longitude the longitude of the place
      * @param name the name of the place
      */
-    public Place(double latitude, double longitude, String name) {
+    public Place(double latitude, double longitude, String name, String price) {
         mLatitude = latitude;
         mLongitude = longitude;
         mName = name;
+        mPrice = price;
     }
 
     /**
@@ -63,6 +65,15 @@ public class Place {
      * @return the name of the place
      */
     public String getName() {
+        return mName;
+    }
+    
+    /**
+     * Gets the price of the place.
+     *
+     * @return the price of the place
+     */
+    public String getPrice() {
         return mName;
     }
 }

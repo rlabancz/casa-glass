@@ -89,7 +89,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 		public void onLocationChanged(OrientationManager orientationManager) {
 			Location location = orientationManager.getLocation();
 			Log.d(TAG, "onLocationChanged");
-			List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 2);
+			List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
 			mCompassView.setNearbyPlaces(places);
 		}
 
@@ -161,7 +161,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 				if (mOrientationManager.hasLocation()) {
 					Location location = mOrientationManager.getLocation();
 					Log.d(TAG, "updateRenderingState");
-					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 2);
+					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
 					mCompassView.setNearbyPlaces(nearbyPlaces);
 				}
 

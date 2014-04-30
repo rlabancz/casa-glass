@@ -80,10 +80,12 @@ public class PropertyMenuActivity extends Activity {
 		card.setText(mProperty.getBedrooms() + " / " + mProperty.getBathrooms());
 		card.setFootnote("Bedrooms / Bathrooms");
 		card.setImageLayout(Card.ImageLayout.FULL);
-		if (mProperty.getAddress().contains("Uph10")) {
+		if (mProperty.getAddress().contains("60 SOUTH TOWN")) {
 			card.addImage(R.drawable.n2862962_1);
-		} else if (mProperty.getAddress().contains("1785")) {
+		} else if (mProperty.getAddress().contains("23 COX BLVD")) {
 			card.addImage(R.drawable.n2865756_1);
+		} else if (mProperty.getAddress().contains("33 CLEGG RD")) {
+			card.addImage(R.drawable.n2878118_1);
 		}
 		//
 		mCards.add(card);

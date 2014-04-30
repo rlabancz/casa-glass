@@ -275,9 +275,10 @@ public class CompassView extends View {
 					float bearing = MathUtils.getBearing(latitude1, longitude1, latitude2, longitude2);
 
 					String name = place.getName();
+					String price = place.getPrice();
 					double distanceKm = MathUtils.getDistance(latitude1, longitude1, latitude2, longitude2);
 					String text = getContext().getResources().getString(R.string.place_text_format, name, mDistanceFormat.format(distanceKm));
-
+					text = price + text;
 					// Measure the text and offset the text bounds to the location where the text
 					// will finally be drawn.
 					Rect textBounds = new Rect();

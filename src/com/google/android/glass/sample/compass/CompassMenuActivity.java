@@ -95,12 +95,12 @@ public class CompassMenuActivity extends Activity {
 		MenuItem menuFirstProperty = this.menu.findItem(R.id.open_place);
 		MenuItem menuSecondProperty = this.menu.findItem(R.id.open_place2);
 		if (ActionParams.firstProperty != null) {
-			menuFirstProperty.setTitle(ActionParams.firstProperty.getAddress());
+			menuFirstProperty.setTitle(ActionParams.firstProperty.getPrice() + " " + ActionParams.firstProperty.getAddress());
 		} else {
 			menuFirstProperty.setTitle("loading...");
 		}
 		if (ActionParams.secondProperty != null) {
-			menuSecondProperty.setTitle(ActionParams.secondProperty.getAddress());
+			menuSecondProperty.setTitle(ActionParams.secondProperty.getPrice() + ActionParams.secondProperty.getAddress());
 		} else {
 			menuSecondProperty.setTitle("loading...");
 		}

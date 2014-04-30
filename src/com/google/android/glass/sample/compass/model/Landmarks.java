@@ -77,7 +77,7 @@ public class Landmarks {
 		// a significant penalty to the application. If the landmark data were much larger,
 		// we may want to load it in the background instead.
 		// String jsonString = readLandmarksResource(context);
-		new SendDataAsync().execute(this, 43.8565092, -79.3502768, 2);
+		new SendDataAsync().execute(this, 43.8565092, -79.3502768, 5);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Landmarks {
 				ActionParams.secondProperty = properties.get(1);
 			}
 			Log.d(TAG, "adding " + property.getAddress());
-			newPlace = new Place(property.getLat(), property.getLng(), property.getAddress());
+			newPlace = new Place(property.getLat(), property.getLng(), property.getAddress(), property.getPrice());
 			if (!mPlaces.contains(newPlace)) {
 				mPlaces.add(newPlace);
 			}
@@ -156,11 +156,12 @@ public class Landmarks {
 	 */
 	private Place jsonObjectToPlace(JSONObject object) {
 		String name = object.optString("name");
+		String price = object.optString("price");
 		double latitude = object.optDouble("latitude", Double.NaN);
 		double longitude = object.optDouble("longitude", Double.NaN);
 
 		if (!name.isEmpty() && !Double.isNaN(latitude) && !Double.isNaN(longitude)) {
-			return new Place(latitude, longitude, name);
+			return new Place(latitude, longitude, name, price);
 		} else {
 			return null;
 		}
@@ -221,14 +222,14 @@ public class Landmarks {
 						+ "%3CLongitudeMin%3E"
 						+ minLon
 						+ "%3C/LongitudeMin%3E"
-						+ "%3CPriceMax%3E1000000%3C/PriceMax%3E"
+						+ "%3CPriceMax%3E2000000%3C/PriceMax%3E"
 						+ "%3CPriceMin%3E500000%3C/PriceMin%3E"
 						+ "%3CPropertyTypeID%3E300%3C/PropertyTypeID%3E"
 						+ "%3CTransactionTypeID%3E2%3C/TransactionTypeID%3E"
 						+ "%3CMinBath%3E1%3C/MinBath%3E"
 						+ "%3CMaxBath%3E2%3C/MaxBath%3E"
 						+ "%3CMinBed%3E1%3C/MinBed%3E"
-						+ "%3CMaxBed%3E2%3C/MaxBed%3E"
+						+ "%3CMaxBed%3E0%3C/MaxBed%3E"
 						+ "%3CStoriesTotalMin%3E0"
 						+ "%3C/StoriesTotalMin%3E"
 						+ "%3CStoriesTotalMax%3E0"
