@@ -92,11 +92,17 @@ public class CompassMenuActivity extends Activity {
 	}
 
 	private void updateMenuTitles() {
-		MenuItem bedMenuItem = this.menu.findItem(R.id.open_place);
+		MenuItem menuFirstProperty = this.menu.findItem(R.id.open_place);
+		MenuItem menuSecondProperty = this.menu.findItem(R.id.open_place2);
 		if (ActionParams.firstProperty != null) {
-			bedMenuItem.setTitle(ActionParams.firstProperty.getAddress());
+			menuFirstProperty.setTitle(ActionParams.firstProperty.getAddress());
 		} else {
-			bedMenuItem.setTitle("open");
+			menuFirstProperty.setTitle("loading...");
+		}
+		if (ActionParams.secondProperty != null) {
+			menuSecondProperty.setTitle(ActionParams.secondProperty.getAddress());
+		} else {
+			menuSecondProperty.setTitle("loading...");
 		}
 	}
 
@@ -128,6 +134,12 @@ public class CompassMenuActivity extends Activity {
 			return true;
 
 		case R.id.open_place:
+			ActionParams.selectedProperty = ActionParams.firstProperty;
+			startActivity(new Intent(this, PropertyMenuActivity.class));
+			return true;
+
+		case R.id.open_place2:
+			ActionParams.selectedProperty = ActionParams.secondProperty;
 			startActivity(new Intent(this, PropertyMenuActivity.class));
 			return true;
 

@@ -20,7 +20,7 @@
     <item
         android:id="@+id/read_aloud"
         android:icon="@drawable/ic_read_aloud"
-        android:orderInCategory="2"
+        android:orderInCategory="4"
         android:title="@string/read_aloud"/>
     <item
         android:id="@+id/stop"
@@ -28,9 +28,14 @@
         android:orderInCategory="3"
         android:title="@string/stop"/>
     <item
+        android:id="@+id/open_place2"
+        android:icon="@drawable/place_mark"
+        android:orderInCategory="2"
+        android:title="loading..."/>
+    <item
         android:id="@+id/open_place"
-        android:icon="@drawable/ic_stop"
+        android:icon="@drawable/place_mark"
         android:orderInCategory="1"
-        android:title="@string/open"/>
+        android:title="loading..."/>
 
 </menu>

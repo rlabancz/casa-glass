@@ -17,8 +17,6 @@
 package com.google.android.glass.sample.compass.model;
 
 import com.google.android.glass.sample.compass.ActionParams;
-import com.google.android.glass.sample.compass.R;
-import com.google.android.glass.sample.compass.util.MathUtils;
 import com.google.android.glass.sample.compass.util.ResultCodes;
 
 import android.content.Context;
@@ -41,10 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -83,7 +77,7 @@ public class Landmarks {
 		// a significant penalty to the application. If the landmark data were much larger,
 		// we may want to load it in the background instead.
 		// String jsonString = readLandmarksResource(context);
-		new SendDataAsync().execute(this, 43.8565092, -79.3502768, 3);
+		new SendDataAsync().execute(this, 43.8565092, -79.3502768, 2);
 	}
 
 	/**
@@ -91,24 +85,32 @@ public class Landmarks {
 	 * are no locations within that threshold, then an empty list will be returned.
 	 */
 	public List<Place> getNearbyLandmarks(double latitude, double longitude, int results) {
-
 		mPlaces.clear();
 		new SendDataAsync().execute(this, latitude, longitude, results);
 		Log.d(TAG, "got places");
 
 		int size;
 		Property property;
+		Log.d(TAG, "size: " + Integer.toString(properties.size()) + " results: " + results);
 		if (properties.size() < results) {
 			size = properties.size();
 		} else {
 			size = results;
 		}
-		Log.d(TAG, "size: " + Integer.toString(size));
+		Place newPlace = null;
 		for (int i = 0; i < size; i++) {
 			property = properties.get(i);
-			ActionParams.firstProperty = property;
+			if (i == 0) {
+				ActionParams.firstProperty = properties.get(0);
+			}
+			if (i == 1) {
+				ActionParams.secondProperty = properties.get(1);
+			}
 			Log.d(TAG, "adding " + property.getAddress());
-			mPlaces.add(new Place(property.getLat(), property.getLng(), property.getAddress()));
+			newPlace = new Place(property.getLat(), property.getLng(), property.getAddress());
+			if (!mPlaces.contains(newPlace)) {
+				mPlaces.add(newPlace);
+			}
 		}
 
 		return mPlaces;
@@ -165,7 +167,7 @@ public class Landmarks {
 	}
 
 	public class SendDataAsync extends AsyncTask<Object, Boolean, String> {
-		public String TAG = "COMPASS";
+		public String TAG = "Landmarks";
 		public static final int ONE_SECOND = 1000;
 		public static final int RECONNECT_TIMEOUT = 30000; // 30 seconds
 		public static final int DATA_TIMEOUT = 8000; // 8 seconds
@@ -185,7 +187,6 @@ public class Landmarks {
 			super.onPreExecute();
 		}
 
-		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected String doInBackground(Object... params) {
 
 			Log.d("MLS", "doInBackground");
@@ -193,7 +194,7 @@ public class Landmarks {
 			lat = (Double) params[1];
 			lon = (Double) params[2];
 			results = (Integer) params[3];
-			double delta = 0.013;
+			double delta = 0.014;
 			String data = "";
 			try {
 				String addressString = "";
@@ -308,6 +309,7 @@ public class Landmarks {
 					String bedroom = obj.getString("Bedrooms");
 					String bathroom = obj.getString("Bathrooms");
 					properties.add(new Property(address, price, lat, lng, picture, bedroom, bathroom));
+					Log.d("Landmarks", "address: " + address);
 				}
 
 				Log.d("MLS", "done parsing");

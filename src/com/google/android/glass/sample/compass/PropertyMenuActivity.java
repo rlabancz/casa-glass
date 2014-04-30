@@ -25,16 +25,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
-import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,17 +56,18 @@ public class PropertyMenuActivity extends Activity {
 
 	private Property mProperty;
 	Menu menu;
-	Card card;
-
 	private List<Card> mCards;
+	private Card card;
+	private Card schoolCard;
+	private Card bikeStationCard;
+	private Card fireStationCard;
+
 	private CardScrollView mCardScrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d("PropertyMenuActivity", "inited");
 		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.property_main);
-		mProperty = ActionParams.firstProperty;
+		mProperty = ActionParams.selectedProperty;
 
 		mCards = new ArrayList<Card>();
 
@@ -78,12 +75,17 @@ public class PropertyMenuActivity extends Activity {
 		card.setText(mProperty.getAddress());
 		card.setFootnote(mProperty.getPrice());
 		mCards.add(card);
-		
+		Log.d("Landmarks", mProperty.getPicture());
 		card = new Card(this);
 		card.setText(mProperty.getBedrooms() + " / " + mProperty.getBathrooms());
 		card.setFootnote("Bedrooms / Bathrooms");
 		card.setImageLayout(Card.ImageLayout.FULL);
-		// card.addImage(R.drawable.puppy_bg);
+		if (mProperty.getAddress().contains("Uph10")) {
+			card.addImage(R.drawable.n2862962_1);
+		} else if (mProperty.getAddress().contains("1785")) {
+			card.addImage(R.drawable.n2865756_1);
+		}
+		//
 		mCards.add(card);
 
 		createCards();
@@ -105,22 +107,12 @@ public class PropertyMenuActivity extends Activity {
 		}
 	}
 
-    private Card schoolCard;
-    private Card bikeStationCard;
-    private Card fireStationCard;
-
 	private void createCards() {
-
-	    schoolCard = new Card(this);
+		schoolCard = new Card(this);
 		bikeStationCard = new Card(this);
-        fireStationCard = new Card(this);
+		fireStationCard = new Card(this);
 
-        getAdditionalInfo(mProperty, fireStationCard, bikeStationCard, schoolCard);
-           /*
-        mCards.add(schoolCard);
-        mCards.add(bikeStationCard);
-        mCards.add(fireStationCard);
-*/
+		getAdditionalInfo(mProperty, fireStationCard, bikeStationCard, schoolCard);
 	}
 
 	private class ExampleCardScrollAdapter extends CardScrollAdapter {
@@ -139,26 +131,6 @@ public class PropertyMenuActivity extends Activity {
 		public Object getItem(int position) {
 			return mCards.get(position);
 		}
-
-		/**
-		 * Returns the amount of view types.
-		 */
-        /*
-		@Override
-		public int getViewTypeCount() {
-			//return Card.getViewTypeCount();
-            return 0;
-		} */
-
-		/**
-		 * Returns the view type of this card so the system can figure out if it can be recycled.
-		 */
-        /*
-		@Override
-		public int getItemViewType(int position) {
-			return mCards.get(position).getItemViewType();
-		} */
-
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -226,79 +198,71 @@ public class PropertyMenuActivity extends Activity {
 		finish();
 	}
 
-    private void getAdditionalInfo(Property property, Card fireStationCard, Card bikeStationCard, Card schoolCard) {
-        new MyAsyncTask().execute(this,
-                "http://conversationboard.com:8019/assessment?latitude="+property.getLat()+"&longitude="+property.getLng(),
-                fireStationCard,
-                bikeStationCard,
-                schoolCard
-        );
+	private void getAdditionalInfo(Property property, Card fireStationCard, Card bikeStationCard, Card schoolCard) {
+		new MyAsyncTask().execute(this, "http://conversationboard.com:8019/assessment?latitude=" + property.getLat() + "&longitude="
+				+ property.getLng(), fireStationCard, bikeStationCard, schoolCard);
 
+	}
 
-    }
+	private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
+		private Card fireStationCard;
+		private Card bikeStationCard;
+		private Card schoolCard;
 
-    private class MyAsyncTask extends AsyncTask<Object, Boolean, String> {
-        private Card fireStationCard;
-        private Card bikeStationCard;
-        private Card schoolCard;
-        @Override
-        protected String doInBackground(Object... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            String textv = "";
-            BufferedReader in = null;
-            String url = (String)params[1];
-            HttpGet request = new HttpGet(url);
-            fireStationCard = (Card)params[2];
-            bikeStationCard = (Card)params[3];
-            schoolCard = (Card)params[4];
-            try {
-                HttpResponse response = httpClient.execute(request);
-                in = new BufferedReader(new InputStreamReader(
-                        response.getEntity().getContent()));
+		@Override
+		protected String doInBackground(Object... params) {
+			HttpClient httpClient = new DefaultHttpClient();
+			String textv = "";
+			BufferedReader in = null;
+			String url = (String) params[1];
+			HttpGet request = new HttpGet(url);
+			fireStationCard = (Card) params[2];
+			bikeStationCard = (Card) params[3];
+			schoolCard = (Card) params[4];
+			try {
+				HttpResponse response = httpClient.execute(request);
+				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-                // NEW CODE
-                String l = "";
-                while ((l = in.readLine()) != null) {
-                    textv+= l;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            return textv;
+				// NEW CODE
+				String l = "";
+				while ((l = in.readLine()) != null) {
+					textv += l;
+				}
+			} catch (IOException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
+			return textv;
 
-        }
+		}
 
+		@Override
+		protected void onPostExecute(String data) {
+			Log.d("PropertyMenuActivity", "data : " + data);
+			try {
+				JSONObject obj = new JSONObject(data);
+				JSONObject fireStation = obj.getJSONObject("fire_station");
+				int distance = fireStation.getInt("distance");
 
-        @Override
-        protected void onPostExecute(String data) {
-            Log.d("PropertyMenuActivity", "data : "+data);
-            try {
-                JSONObject obj = new JSONObject(data);
-                JSONObject fireStation = obj.getJSONObject("fire_station");
-                int distance = fireStation.getInt("distance");
+				fireStationCard.setText("Closest Firestation:\n" + distance + "m");
+				mCards.add(fireStationCard);
 
-                fireStationCard.setText("Closest Firestation:\n"+distance+"m");
-                mCards.add(fireStationCard);
+				JSONObject bikeStation = obj.getJSONObject(("bike_station"));
+				String name = bikeStation.getString("stationName");
+				distance = bikeStation.getInt("distance");
+				bikeStationCard.setText("Closest Bixi Station:\n" + name + "\n" + distance + "m");
+				mCards.add(bikeStationCard);
 
-                JSONObject bikeStation = obj.getJSONObject(("bike_station"));
-                String name = bikeStation.getString("stationName");
-                distance = bikeStation.getInt("distance");
-                bikeStationCard.setText("Closest Bixi Station:\n"+name+"\n"+distance+"m");
-                mCards.add(bikeStationCard);
+				JSONObject school = obj.getJSONObject("school");
+				name = school.getString("SCHNAME");
+				distance = school.getInt("distance");
+				schoolCard.setText("Closest School:\n" + name + "\n" + distance + "m");
+				mCards.add(schoolCard);
+				mCardScrollView.activate();
 
+			} catch (JSONException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
 
-                JSONObject school = obj.getJSONObject("school");
-                name = school.getString("SCHNAME");
-                distance = school.getInt("distance");
-                schoolCard.setText("Closest School:\n"+name+"\n"+distance+"m");
-                mCards.add(schoolCard);
-                mCardScrollView.activate();
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-
-        }
-    }
+		}
+	}
 }
