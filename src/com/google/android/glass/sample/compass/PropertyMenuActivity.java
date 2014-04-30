@@ -61,30 +61,31 @@ public class PropertyMenuActivity extends Activity {
 	private Property mProperty;
 	Menu menu;
 	Card card;
-	
+
 	private List<Card> mCards;
 	private CardScrollView mCardScrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-        Log.d("PropertyMenuActivity", "inited");
+		Log.d("PropertyMenuActivity", "inited");
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.property_main);
+		// setContentView(R.layout.property_main);
 		mProperty = ActionParams.firstProperty;
 
-
-
-//		RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
-///		TextView price = (TextView) findViewById(R.id.price);
-	//	price.setText(mProperty.getPrice());
-	//	background.setBackground(LoadImageFromWebOperations(mProperty.getPicture()));
 		mCards = new ArrayList<Card>();
-		
+
 		card = new Card(this);
 		card.setText(mProperty.getAddress());
 		card.setFootnote(mProperty.getPrice());
 		mCards.add(card);
 		
+		card = new Card(this);
+		card.setText(mProperty.getBedrooms() + " / " + mProperty.getBathrooms());
+		card.setFootnote("Bedrooms / Bathrooms");
+		card.setImageLayout(Card.ImageLayout.FULL);
+		// card.addImage(R.drawable.puppy_bg);
+		mCards.add(card);
+
 		createCards();
 
 		mCardScrollView = new CardScrollView(this);

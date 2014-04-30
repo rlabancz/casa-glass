@@ -223,7 +223,8 @@ public class CompassView extends View {
 	 *            the size, in pixels, of one degree step
 	 */
 	private void drawCompassDirections(Canvas canvas, float pixelsPerDegree) {
-		float degreesPerTick = 360.0f / mDirections.length;
+		
+		/*float degreesPerTick = 360.0f / mDirections.length;
 
 		mPaint.setColor(Color.WHITE);
 
@@ -241,7 +242,7 @@ public class CompassView extends View {
 				canvas.drawLine(i * degreesPerTick * pixelsPerDegree, -TICK_HEIGHT / 2, i * degreesPerTick * pixelsPerDegree, TICK_HEIGHT / 2,
 						mTickPaint);
 			}
-		}
+		}*/
 	}
 
 	/**

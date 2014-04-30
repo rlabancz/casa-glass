@@ -6,13 +6,17 @@ public class Property {
 	private double lat;
 	private double lng;
 	private String picture;
+	private String bedrooms;
+	private String bathrooms;
 
-	public Property(String address, String price, double lat, double lng, String picture) {
+	public Property(String address, String price, double lat, double lng, String picture, String bedrooms, String bathrooms) {
 		this.address = address;
 		this.price = price;
 		this.lat = lat;
 		this.lng = lng;
 		this.picture = picture;
+		this.bedrooms = bedrooms;
+		this.bathrooms = bathrooms;
 	}
 
 	public String getAddress() {
@@ -55,4 +59,19 @@ public class Property {
 		this.picture = picture;
 	}
 
+	public String getBedrooms() {
+		return bedrooms;
+	}
+
+	public void setBedrooms(String bedrooms) {
+		this.bedrooms = bedrooms;
+	}
+
+	public String getBathrooms() {
+		return bathrooms;
+	}
+
+	public void setBathrooms(String bathrooms) {
+		this.bathrooms = bathrooms;
+	}
 }

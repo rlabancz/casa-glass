@@ -97,7 +97,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 		public void onAccuracyChanged(OrientationManager orientationManager) {
 			mInterference = orientationManager.hasInterference();
 			Log.d(TAG, "onAccuracyChanged");
-			updateTipsView();
+			// updateTipsView();
 		}
 	};
 
