@@ -83,7 +83,7 @@ public class Landmarks {
 		// a significant penalty to the application. If the landmark data were much larger,
 		// we may want to load it in the background instead.
 		// String jsonString = readLandmarksResource(context);
-		new SendDataAsync().execute(this, 43.6609214, -79.3867236, 3);
+		new SendDataAsync().execute(this, 43.8565092, -79.3502768, 3);
 	}
 
 	/**
