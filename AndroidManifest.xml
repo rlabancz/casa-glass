@@ -8,6 +8,7 @@
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,7 +24,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_compass"
+        android:icon="@drawable/ic_app"
         android:label="@string/app_name" >
         <uses-library
             android:name="com.google.android.glass"
@@ -37,7 +38,7 @@
         <service
             android:name=".CompassService"
             android:enabled="true"
-            android:icon="@drawable/ic_compass"
+            android:icon="@drawable/ic_app"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
@@ -45,7 +46,7 @@
 
             <meta-data
                 android:name="com.google.android.glass.VoiceTrigger"
-                android:resource="@xml/compass_show" />
+                android:resource="@xml/voice_trigger" />
         </service>
     </application>
 
