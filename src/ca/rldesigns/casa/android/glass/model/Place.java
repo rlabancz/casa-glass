@@ -60,6 +60,6 @@ public class Place {
 	 * @return the price of the place
 	 */
 	public String getPrice() {
-		return mName;
+		return mPrice;
 	}
 }

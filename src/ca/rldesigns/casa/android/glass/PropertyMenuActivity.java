@@ -31,12 +31,9 @@ import com.google.android.glass.widget.CardScrollView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * This activity manages the options menu that appears when the user taps on the compass's live card.
- */
 public class PropertyMenuActivity extends Activity {
 
-	private CompassService.CompassBinder mCompassService;
+	private CasaService.CasaBinder mCasaService;
 	private boolean mAttachedToWindow;
 	private boolean mOptionsMenuOpen;
 
@@ -149,7 +146,7 @@ public class PropertyMenuActivity extends Activity {
 
 	@Override
 	public void openOptionsMenu() {
-		if (!mOptionsMenuOpen && mAttachedToWindow && mCompassService != null) {
+		if (!mOptionsMenuOpen && mAttachedToWindow && mCasaService != null) {
 			super.openOptionsMenu();
 		}
 	}
@@ -166,7 +163,6 @@ public class PropertyMenuActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.read_aloud:
-			// mCompassService.readHeadingAloud();
 			return true;
 		case R.id.exit:
 			this.finish();

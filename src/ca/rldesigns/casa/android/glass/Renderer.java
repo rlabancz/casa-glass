@@ -22,20 +22,20 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The surface callback that provides the rendering logic for the compass live card. This callback also manages the lifetime of the sensor and
- * location event listeners (through {@link OrientationManager}) so that tracking only occurs when the card is visible.
+ * The surface callback that provides the rendering logic for the live card. This callback also manages the lifetime of the sensor and location event
+ * listeners (through {@link OrientationManager}) so that tracking only occurs when the card is visible.
  */
-public class CompassRenderer implements DirectRenderingCallback {
+public class Renderer implements DirectRenderingCallback {
 
-	private static final String TAG = CompassRenderer.class.getSimpleName();
+	private static final String TAG = Renderer.class.getSimpleName();
 
 	/**
-	 * The (absolute) pitch angle beyond which the compass will display a message telling the user that his or her head is at too steep an angle to be
+	 * The (absolute) pitch angle beyond which the app will display a message telling the user that his or her head is at too steep an angle to be
 	 * reliable.
 	 */
 	private static final float TOO_STEEP_PITCH_DEGREES = 70.0f;
 
-	/** The refresh rate, in frames per second, of the compass. */
+	/** The refresh rate, in frames per second, of the app. */
 	private static final int REFRESH_RATE_FPS = 45;
 
 	/** The duration, in milliseconds, of one frame. */
@@ -51,17 +51,17 @@ public class CompassRenderer implements DirectRenderingCallback {
 	private boolean mRenderingPaused;
 
 	private final FrameLayout mLayout;
-	private final CompassView mCompassView;
+	private final CasaView mCasaView;
 	private final RelativeLayout mTipsContainer;
 	private final TextView mTipsView;
 	private final OrientationManager mOrientationManager;
 	private final Landmarks mLandmarks;
 
-	private final OrientationManager.OnChangedListener mCompassListener = new OrientationManager.OnChangedListener() {
+	private final OrientationManager.OnChangedListener mCasaListener = new OrientationManager.OnChangedListener() {
 
 		@Override
 		public void onOrientationChanged(OrientationManager orientationManager) {
-			mCompassView.setHeading(orientationManager.getHeading());
+			mCasaView.setHeading(orientationManager.getHeading());
 
 			boolean oldTooSteep = mTooSteep;
 			mTooSteep = (Math.abs(orientationManager.getPitch()) > TOO_STEEP_PITCH_DEGREES);
@@ -75,7 +75,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 			Location location = orientationManager.getLocation();
 			Log.d(TAG, "onLocationChanged");
 			List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
-			mCompassView.setNearbyPlaces(places);
+			mCasaView.setNearbyPlaces(places);
 		}
 
 		@Override
@@ -87,21 +87,21 @@ public class CompassRenderer implements DirectRenderingCallback {
 	};
 
 	/**
-	 * Creates a new instance of the {@code CompassRenderer} with the specified context, orientation manager, and landmark collection.
+	 * Creates a new instance of the {@code Renderer} with the specified context, orientation manager, and landmark collection.
 	 */
-	public CompassRenderer(Context context, OrientationManager orientationManager, Landmarks landmarks) {
+	public Renderer(Context context, OrientationManager orientationManager, Landmarks landmarks) {
 		LayoutInflater inflater = LayoutInflater.from(context);
-		mLayout = (FrameLayout) inflater.inflate(R.layout.compass, null);
+		mLayout = (FrameLayout) inflater.inflate(R.layout.main, null);
 		mLayout.setWillNotDraw(false);
 
-		mCompassView = (CompassView) mLayout.findViewById(R.id.compass);
+		mCasaView = (CasaView) mLayout.findViewById(R.id.casaView);
 		mTipsContainer = (RelativeLayout) mLayout.findViewById(R.id.tips_container);
 		mTipsView = (TextView) mLayout.findViewById(R.id.tips_view);
 
 		mOrientationManager = orientationManager;
 		mLandmarks = landmarks;
 
-		mCompassView.setOrientationManager(mOrientationManager);
+		mCasaView.setOrientationManager(mOrientationManager);
 	}
 
 	@Override
@@ -140,14 +140,14 @@ public class CompassRenderer implements DirectRenderingCallback {
 
 		if (shouldRender != isRendering) {
 			if (shouldRender) {
-				mOrientationManager.addOnChangedListener(mCompassListener);
+				mOrientationManager.addOnChangedListener(mCasaListener);
 				mOrientationManager.start();
 
 				if (mOrientationManager.hasLocation()) {
 					Location location = mOrientationManager.getLocation();
 					Log.d(TAG, "updateRenderingState");
 					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
-					mCompassView.setNearbyPlaces(nearbyPlaces);
+					mCasaView.setNearbyPlaces(nearbyPlaces);
 				}
 
 				mRenderThread = new RenderThread();
@@ -156,7 +156,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 				mRenderThread.quit();
 				mRenderThread = null;
 
-				mOrientationManager.removeOnChangedListener(mCompassListener);
+				mOrientationManager.removeOnChangedListener(mCasaListener);
 				mOrientationManager.stop();
 
 			}
@@ -178,7 +178,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 	}
 
 	/**
-	 * Repaints the compass.
+	 * Repaints the canvas.
 	 */
 	private synchronized void repaint() {
 		Canvas canvas = null;
@@ -202,7 +202,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 	}
 
 	/**
-	 * Shows or hides the tip view with an appropriate message based on the current accuracy of the compass.
+	 * Shows or hides the tip view with an appropriate message based on the current accuracy.
 	 */
 	private void updateTipsView() {
 		int stringId = 0;
@@ -229,7 +229,7 @@ public class CompassRenderer implements DirectRenderingCallback {
 	}
 
 	/**
-	 * Redraws the compass in the background.
+	 * Redraws the background.
 	 */
 	private class RenderThread extends Thread {
 		private boolean mShouldRun;

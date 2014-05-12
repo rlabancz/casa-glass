@@ -21,14 +21,22 @@ import android.speech.tts.TextToSpeech;
  * The main application service that manages the lifetime of the compass live card and the objects that help out with orientation tracking and
  * landmarks.
  */
-public class CompassService extends Service {
+public class CasaService extends Service {
 
-	private static final String LIVE_CARD_TAG = "compass";
+	private static final String LIVE_CARD_TAG = "casa";
+	private final CasaBinder mBinder = new CasaBinder();
+
+	private OrientationManager mOrientationManager;
+	private Landmarks mLandmarks;
+	private TextToSpeech mSpeech;
+
+	private LiveCard mLiveCard;
+	private Renderer mRenderer;
 
 	/**
 	 * A binder that gives other components access to the speech capabilities provided by the service.
 	 */
-	public class CompassBinder extends Binder {
+	public class CasaBinder extends Binder {
 		/**
 		 * Read the current heading aloud using the text-to-speech engine.
 		 */
@@ -51,15 +59,6 @@ public class CompassService extends Service {
 			mSpeech.speak(headingText, TextToSpeech.QUEUE_FLUSH, null);
 		}
 	}
-
-	private final CompassBinder mBinder = new CompassBinder();
-
-	private OrientationManager mOrientationManager;
-	private Landmarks mLandmarks;
-	private TextToSpeech mSpeech;
-
-	private LiveCard mLiveCard;
-	private CompassRenderer mRenderer;
 
 	@Override
 	public void onCreate() {
@@ -91,12 +90,12 @@ public class CompassService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (mLiveCard == null) {
 			mLiveCard = new LiveCard(this, LIVE_CARD_TAG);
-			mRenderer = new CompassRenderer(this, mOrientationManager, mLandmarks);
+			mRenderer = new Renderer(this, mOrientationManager, mLandmarks);
 
 			mLiveCard.setDirectRenderingEnabled(true).getSurfaceHolder().addCallback(mRenderer);
 
 			// Display the options menu when the live card is tapped.
-			Intent menuIntent = new Intent(this, CompassMenuActivity.class);
+			Intent menuIntent = new Intent(this, MainActivity.class);
 			menuIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			mLiveCard.setAction(PendingIntent.getActivity(this, 0, menuIntent, 0));
 			mLiveCard.attach(this);

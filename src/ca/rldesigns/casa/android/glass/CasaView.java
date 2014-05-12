@@ -30,14 +30,13 @@ import java.util.List;
  * Draws a stylized compass, with text labels at the cardinal and ordinal directions, and tick marks at the half-winds. The red "needles" in the
  * display mark the current heading.
  */
-public class CompassView extends View {
+public class CasaView extends View {
 
 	/** Various dimensions and other drawing-related constants. */
 	private static final float NEEDLE_WIDTH = 6;
 	private static final float NEEDLE_HEIGHT = 125;
 	private static final int NEEDLE_COLOR = Color.RED;
 	private static final float TICK_WIDTH = 2;
-	private static final float TICK_HEIGHT = 10;
 	private static final float DIRECTION_TEXT_HEIGHT = 84.0f;
 	private static final float PLACE_TEXT_HEIGHT = 22.0f;
 	private static final float PLACE_PIN_WIDTH = 14.0f;
@@ -71,21 +70,19 @@ public class CompassView extends View {
 	private final Path mPath;
 	private final TextPaint mPlacePaint;
 	private final Bitmap mPlaceBitmap;
-	private final Rect mTextBounds;
 	private final List<Rect> mAllBounds;
 	private final NumberFormat mDistanceFormat;
-	private final String[] mDirections;
 	private final ValueAnimator mAnimator;
 
-	public CompassView(Context context) {
+	public CasaView(Context context) {
 		this(context, null, 0);
 	}
 
-	public CompassView(Context context, AttributeSet attrs) {
+	public CasaView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public CompassView(Context context, AttributeSet attrs, int defStyle) {
+	public CasaView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
 		mPaint = new Paint();
@@ -108,7 +105,6 @@ public class CompassView extends View {
 		mPlacePaint.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
 
 		mPath = new Path();
-		mTextBounds = new Rect();
 		mAllBounds = new ArrayList<Rect>();
 
 		mDistanceFormat = NumberFormat.getNumberInstance();
@@ -121,8 +117,6 @@ public class CompassView extends View {
 		// time, so that we can jump directly to the starting orientation
 		// instead of spinning from a default value of 0.
 		mAnimatedHeading = Float.NaN;
-
-		mDirections = context.getResources().getStringArray(R.array.direction_abbreviations);
 
 		mAnimator = new ValueAnimator();
 		setupAnimator();

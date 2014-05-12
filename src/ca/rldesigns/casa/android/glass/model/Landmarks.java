@@ -1,6 +1,7 @@
 package ca.rldesigns.casa.android.glass.model;
 
 import ca.rldesigns.casa.android.glass.ActionParams;
+import ca.rldesigns.casa.android.glass.util.MathUtils;
 import ca.rldesigns.casa.android.glass.util.ResultCodes;
 
 import android.content.Context;
@@ -104,19 +105,23 @@ public class Landmarks {
 	 * Gets a list of landmarks that are within ten kilometers of the specified coordinates. This function will never return null; if there are no
 	 * locations within that threshold, then an empty list will be returned.
 	 */
-	/*
-	 * public List<Place> getNearbyLandmarks(double latitude, double longitude) { ArrayList<Place> nearbyPlaces = new ArrayList<Place>();
-	 * 
-	 * for (Place knownPlace : mPlaces) { if (MathUtils.getDistance(latitude, longitude, knownPlace.getLatitude(), knownPlace.getLongitude()) <=
-	 * MAX_DISTANCE_KM) { nearbyPlaces.add(knownPlace); } }
-	 * 
-	 * return nearbyPlaces; }
-	 */
+	public List<Place> getNearbyLandmarks(double latitude, double longitude) {
+		ArrayList<Place> nearbyPlaces = new ArrayList<Place>();
+
+		for (Place knownPlace : mPlaces) {
+			if (MathUtils.getDistance(latitude, longitude, knownPlace.getLatitude(), knownPlace.getLongitude()) <= MAX_DISTANCE_KM) {
+				nearbyPlaces.add(knownPlace);
+			}
+		}
+
+		return nearbyPlaces;
+	}
+
 	/**
 	 * Populates the internal places list from places found in a JSON string. This string should contain a root object with a "landmarks" property
 	 * that is an array of objects that represent places. A place has three properties: name, latitude, and longitude.
 	 */
-	private void populatePlaceList(String jsonString) {
+	public void populatePlaceList(String jsonString) {
 		try {
 			JSONObject json = new JSONObject(jsonString);
 			JSONArray array = json.optJSONArray("landmarks");
