@@ -1,3 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- <trigger command="EXPLORE_NEARBY" /> -->
 <trigger keyword="@string/glass_voice_trigger" />

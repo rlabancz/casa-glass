@@ -54,8 +54,9 @@
     <string name="magnetic_interference">Glass is detecting too much interference</string>
 
     <!-- Menu item strings. -->
-    <string name="read_aloud">Read aloud</string>
-    <string name="stop">Stop</string>
+    <string name="exit">Exit</string>
     <string name="open">Open</string>
+    <string name="loading">Loading…</string>
+    <string name="read_aloud">Read aloud</string>
 
 </resources>

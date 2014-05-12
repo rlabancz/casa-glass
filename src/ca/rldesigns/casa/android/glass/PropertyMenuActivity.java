@@ -168,7 +168,7 @@ public class PropertyMenuActivity extends Activity {
 		case R.id.read_aloud:
 			// mCompassService.readHeadingAloud();
 			return true;
-		case R.id.stop:
+		case R.id.exit:
 			this.finish();
 			return true;
 

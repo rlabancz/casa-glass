@@ -104,7 +104,7 @@ public class CompassMenuActivity extends Activity {
 		case R.id.read_aloud:
 			mCompassService.readHeadingAloud();
 			return true;
-		case R.id.stop:
+		case R.id.exit:
 			// Stop the service at the end of the message queue for proper options menu
 			// animation. This is only needed when starting an Activity or stopping a Service
 			// that published a LiveCard.
