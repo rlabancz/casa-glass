@@ -14,3 +14,7 @@ on the command line:
 
 To start the sample, say "ok glass, Find me a home" from the Glass clock
 screen or use the touch menu.
+
+##
+created android config app
+Can be found at: https://github.com/rlabancz/casa-android
