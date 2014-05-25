@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.rldesigns.casa.android.glass.model.Property;
+import ca.rldesigns.casa.android.glass.util.ActionParams;
 
 import com.google.android.glass.app.Card;
 

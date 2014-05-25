@@ -1,23 +1,33 @@
 package ca.rldesigns.casa.android.glass;
 
+import static ca.rldesigns.casa.android.glass.ApplicationData.DATABASE_NAME;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.lang.Runnable;
+import java.util.Calendar;
+
+import com.google.zxing.client.glass.CaptureActivity;
 
 import ca.rldesigns.casa.android.glass.model.Landmarks;
+import ca.rldesigns.casa.android.glass.util.ActionParams;
+import ca.rldesigns.casa.android.glass.util.RequestCodes;
+import ca.rldesigns.casa.android.glass.util.ResultCodes;
 
 /**
  * This activity manages the options menu that appears when the user taps on the compass's live card.
  */
-public class MainActivity extends Activity {
+public class MenuActivity extends Activity {
 
 	private final Handler mHandler = new Handler();
 
@@ -26,10 +36,12 @@ public class MainActivity extends Activity {
 	private boolean mOptionsMenuOpen;
 	public Menu menu;
 	public Landmarks mLandmarks;
+	private SharedPreferences savedSettings;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.d("CASA", "onService");
 			if (service instanceof CasaService.CasaBinder) {
 				mCompassService = (CasaService.CasaBinder) service;
 				openOptionsMenu();
@@ -45,7 +57,36 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		savedSettings = getSharedPreferences(DATABASE_NAME, 0);
+		Log.d("CASA", "onCreate");
 		bindService(new Intent(this, CasaService.class), mConnection, 0);
+	}
+
+	private void loadSettings() {
+		boolean setupDone = savedSettings.getBoolean(ApplicationData.SETUP_DONE, false);
+		if (!setupDone) {
+			Intent intentGetSettings = new Intent(this, CaptureActivity.class);
+			startActivityForResult(intentGetSettings, RequestCodes.REQUEST_SETTINGS);
+		} else {
+
+			String selectedAddress = savedSettings.getString(ApplicationData.SELECTED_ADDRESS, "");
+			ActionParams.SELECTED_ADDRESS = selectedAddress;
+
+			Calendar cal = Calendar.getInstance();
+			long oneYear = (long) 3.154E10;
+			cal.setTimeInMillis(cal.getTimeInMillis() - oneYear);
+			ActionParams.Year = savedSettings.getInt(ApplicationData.START_DATE_YEAR, cal.get(Calendar.YEAR));
+			ActionParams.MonthOfYear = savedSettings.getInt(ApplicationData.START_DATE_MONTH, cal.get(Calendar.MONTH));
+			ActionParams.DayOfMonth = savedSettings.getInt(ApplicationData.START_DATE_DAY, cal.get(Calendar.DAY_OF_MONTH));
+			ActionParams.PriceMinValue = savedSettings.getInt(ApplicationData.PRICE_MIN, 0);
+			ActionParams.PriceMaxValue = savedSettings.getInt(ApplicationData.PRICE_MAX, 0);
+			ActionParams.BedroomMinValue = savedSettings.getInt(ApplicationData.BEDROOM_MIN, 0);
+			ActionParams.BedroomMaxValue = savedSettings.getInt(ApplicationData.BEDROOM_MAX, 0);
+			ActionParams.BathroomMinValue = savedSettings.getInt(ApplicationData.BATHROOM_MIN, 0);
+			ActionParams.BathroomMaxValue = savedSettings.getInt(ApplicationData.BATHROOM_MAX, 0);
+			ActionParams.StoriesMinValue = savedSettings.getInt(ApplicationData.STORIES_MIN, 0);
+			ActionParams.StoriesMaxValue = savedSettings.getInt(ApplicationData.STORIES_MAX, 0);
+		}
 	}
 
 	@Override
@@ -112,7 +153,7 @@ public class MainActivity extends Activity {
 
 				@Override
 				public void run() {
-					stopService(new Intent(MainActivity.this, CasaService.class));
+					stopService(new Intent(MenuActivity.this, CasaService.class));
 				}
 			});
 			return true;
@@ -143,4 +184,17 @@ public class MainActivity extends Activity {
 		// item is selected from the menu or when the menu is dismissed by swiping down.
 		finish();
 	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) {
+		case RequestCodes.REQUEST_SETTINGS:
+			if (resultCode == ResultCodes.SETTINGS_RECIEVED) {
+				bindService(new Intent(this, CasaService.class), mConnection, 0);
+			}
+			break;
+		}
+	}
+
 }

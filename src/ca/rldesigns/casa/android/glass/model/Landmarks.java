@@ -1,6 +1,6 @@
 package ca.rldesigns.casa.android.glass.model;
 
-import ca.rldesigns.casa.android.glass.ActionParams;
+import ca.rldesigns.casa.android.glass.util.ActionParams;
 import ca.rldesigns.casa.android.glass.util.MathUtils;
 import ca.rldesigns.casa.android.glass.util.ResultCodes;
 
@@ -62,6 +62,7 @@ public class Landmarks {
 		// a significant penalty to the application. If the landmark data were much larger,
 		// we may want to load it in the background instead.
 		// String jsonString = readLandmarksResource(context);
+		Log.d("CASA", "Landmarks");
 		new SendDataAsync().execute(this, 43.8565092, -79.3502768, 5);
 	}
 
