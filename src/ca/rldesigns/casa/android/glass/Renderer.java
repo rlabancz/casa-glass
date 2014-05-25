@@ -74,8 +74,8 @@ public class Renderer implements DirectRenderingCallback {
 		public void onLocationChanged(OrientationManager orientationManager) {
 			Location location = orientationManager.getLocation();
 			Log.d(TAG, "onLocationChanged");
-			List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
-			mCasaView.setNearbyPlaces(places);
+			// List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
+			// mCasaView.setNearbyPlaces(places);
 		}
 
 		@Override
@@ -145,7 +145,7 @@ public class Renderer implements DirectRenderingCallback {
 
 				if (mOrientationManager.hasLocation()) {
 					Location location = mOrientationManager.getLocation();
-					Log.d(TAG, "updateRenderingState");
+					Log.d("CASA", "updateRenderingState");
 					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
 					mCasaView.setNearbyPlaces(nearbyPlaces);
 				}
@@ -158,7 +158,6 @@ public class Renderer implements DirectRenderingCallback {
 
 				mOrientationManager.removeOnChangedListener(mCasaListener);
 				mOrientationManager.stop();
-
 			}
 		}
 	}

@@ -78,14 +78,14 @@ public class MenuActivity extends Activity {
 			ActionParams.Year = savedSettings.getInt(ApplicationData.START_DATE_YEAR, cal.get(Calendar.YEAR));
 			ActionParams.MonthOfYear = savedSettings.getInt(ApplicationData.START_DATE_MONTH, cal.get(Calendar.MONTH));
 			ActionParams.DayOfMonth = savedSettings.getInt(ApplicationData.START_DATE_DAY, cal.get(Calendar.DAY_OF_MONTH));
-			ActionParams.PriceMinValue = savedSettings.getInt(ApplicationData.PRICE_MIN, 0);
-			ActionParams.PriceMaxValue = savedSettings.getInt(ApplicationData.PRICE_MAX, 0);
-			ActionParams.BedroomMinValue = savedSettings.getInt(ApplicationData.BEDROOM_MIN, 0);
-			ActionParams.BedroomMaxValue = savedSettings.getInt(ApplicationData.BEDROOM_MAX, 0);
-			ActionParams.BathroomMinValue = savedSettings.getInt(ApplicationData.BATHROOM_MIN, 0);
-			ActionParams.BathroomMaxValue = savedSettings.getInt(ApplicationData.BATHROOM_MAX, 0);
-			ActionParams.StoriesMinValue = savedSettings.getInt(ApplicationData.STORIES_MIN, 0);
-			ActionParams.StoriesMaxValue = savedSettings.getInt(ApplicationData.STORIES_MAX, 0);
+			ActionParams.PriceMinValue = Integer.toString(savedSettings.getInt(ApplicationData.PRICE_MIN, 0));
+			ActionParams.PriceMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.PRICE_MAX, 0));
+			ActionParams.BedroomMinValue = Integer.toString(savedSettings.getInt(ApplicationData.BEDROOM_MIN, 0));
+			ActionParams.BedroomMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.BEDROOM_MAX, 0));
+			ActionParams.BathroomMinValue = Integer.toString(savedSettings.getInt(ApplicationData.BATHROOM_MIN, 0));
+			ActionParams.BathroomMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.BATHROOM_MAX, 0));
+			ActionParams.StoriesMinValue = Integer.toString(savedSettings.getInt(ApplicationData.STORIES_MIN, 0));
+			ActionParams.StoriesMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.STORIES_MAX, 0));
 		}
 	}
 

@@ -179,41 +179,54 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			TextView statusView = (TextView) findViewById(R.id.status_view);
 			String text = result.getText();
 			if (text != null) {
-			try {
-				JSONObject settings = new JSONObject(text);
-				double lat = (double) settings.get("y");
-				double lng = (double) settings.get("x");
-				Log.d("CASA", Double.toString(lat)+", " +Double.toString(lng));
-				ActionParams.SelectedLatLng = new LatLng(lat, lng); 
-				this.finish();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			}
-			/*
-			 		
-		try {
-			settings.put("x", selectedLatLng.longitude);
-			settings.put("y", selectedLatLng.latitude);
-			settings.put("d",
-					Integer.toString(datePicker.getYear()) + Integer.toString(datePicker.getMonth()) + Integer.toString(datePicker.getDayOfMonth()));
+				try {
+					JSONObject settings = new JSONObject(text);
+					String lat = (String) settings.get("y");
+					String lng = (String) settings.get("x");
+					Log.d("CASA", lat + ", " + lng);
+					ActionParams.SelectedLatLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+					String date = (String) settings.get("d");
+					date = date.replace('.', '/');
+					Log.d("CASA", "date: " + date);
+					ActionParams.Date = date;
 
-			settings.put("p-", priceRange.getLeftIndex());
-			settings.put("p+", priceRange.getRightIndex());
-			settings.put("e-", bedroomRange.getLeftIndex());
-			settings.put("e+", bedroomRange.getRightIndex());
-			settings.put("a-", bathroomRange.getLeftIndex());
-			settings.put("a+", bathroomRange.getRightIndex());
-			settings.put("s-", storiesRange.getLeftIndex());
-			settings.put("s+", storiesRange.getRightIndex());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		*/	
-			
-			
+					int priceMin = (int) settings.get("p-");
+					priceMin = priceMin * 500000;
+					ActionParams.PriceMinValue = Integer.toString(priceMin);
+					Log.d("CASA", "priceMin: " + ActionParams.PriceMinValue);
+					int priceMax = (int) settings.get("p+");
+					priceMax = priceMax * 500000;
+					ActionParams.PriceMaxValue = Integer.toString(priceMax);
+					Log.d("CASA", "priceMax: " + ActionParams.PriceMaxValue);
+
+					int bedroomMin = (int) settings.get("e-");
+					ActionParams.BedroomMinValue = Integer.toString(bedroomMin);
+					Log.d("CASA", "bedroomMin: " + ActionParams.BedroomMinValue);
+					int bedroomMax = (int) settings.get("e+");
+					ActionParams.BedroomMaxValue = Integer.toString(bedroomMax);
+					Log.d("CASA", "bedroomMax: " + ActionParams.BedroomMaxValue);
+
+					int bathroomMin = (int) settings.get("a-");
+					ActionParams.BathroomMinValue = Integer.toString(bathroomMin);
+					Log.d("CASA", "bathroomMin: " + ActionParams.BathroomMinValue);
+					int bathroomMax = (int) settings.get("a+");
+					ActionParams.BathroomMaxValue = Integer.toString(bathroomMax);
+					Log.d("CASA", "bathroomMax: " + ActionParams.BathroomMaxValue);
+
+					int storiesMin = (int) settings.get("s-");
+					ActionParams.StoriesMinValue = Integer.toString(storiesMin);
+					Log.d("CASA", "storiesMin: " + ActionParams.StoriesMinValue);
+					int storiesMax = (int) settings.get("s+");
+					ActionParams.StoriesMaxValue = Integer.toString(storiesMax);
+					Log.d("CASA", "storiesMax: " + ActionParams.StoriesMaxValue);
+
+					this.finish();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			statusView.setText(text);
 			statusView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.max(14, 56 - text.length() / 4));
 			statusView.setVisibility(View.VISIBLE);

@@ -26,12 +26,12 @@ public class ActionParams {
 	public static int Year = 0;
 	public static int MonthOfYear = 0;
 	public static int DayOfMonth = 0;
-	public static int PriceMinValue = 0;
-	public static int PriceMaxValue = 0;
-	public static int BedroomMinValue = 0;
-	public static int BedroomMaxValue = 0;
-	public static int BathroomMinValue = 0;
-	public static int BathroomMaxValue = 0;
-	public static int StoriesMinValue = 0;
-	public static int StoriesMaxValue = 0;
+	public static String PriceMinValue = "";
+	public static String PriceMaxValue = "";
+	public static String BedroomMinValue = "";
+	public static String BedroomMaxValue = "";
+	public static String BathroomMinValue = "";
+	public static String BathroomMaxValue = "";
+	public static String StoriesMinValue = "";
+	public static String StoriesMaxValue = "";
 }
