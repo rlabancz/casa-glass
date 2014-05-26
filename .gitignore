@@ -4,3 +4,6 @@ gen/**
 .idea/workspace.xml
 *.swp
 .idea/*
+/gen
+/bin
+/casaglass-keystore

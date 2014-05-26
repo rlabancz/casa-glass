@@ -1,34 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2013 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.android.glass.sample.compass"
-    android:versionCode="5"
-    android:versionName="1.0" >
+    package="ca.rldesigns.casa.android.glass"
+    android:versionCode="6"
+    android:versionName="0.1-20140526" >
 
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT" />
 
     <uses-feature
         android:name="android.hardware.location"
@@ -39,21 +25,28 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_compass"
+        android:icon="@drawable/ic_app"
         android:label="@string/app_name" >
         <uses-library
             android:name="com.google.android.glass"
             android:required="true" />
 
         <activity
-            android:name="com.google.android.glass.sample.compass.CompassMenuActivity"
+            android:name=".MenuActivity"
             android:theme="@style/MenuTheme" />
         <activity android:name=".PropertyMenuActivity" />
+        <activity android:name="com.google.zxing.client.glass.CaptureActivity" >
+            <intent-filter>
+                <action android:name="com.google.zxing.client.android.SCAN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
-            android:name="com.google.android.glass.sample.compass.CompassService"
+            android:name=".CasaService"
             android:enabled="true"
-            android:icon="@drawable/ic_compass"
+            android:icon="@drawable/ic_app"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
@@ -61,7 +54,7 @@
 
             <meta-data
                 android:name="com.google.android.glass.VoiceTrigger"
-                android:resource="@xml/compass_show" />
+                android:resource="@xml/voice_trigger" />
         </service>
     </application>
 

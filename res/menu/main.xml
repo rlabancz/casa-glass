@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/read_aloud"
+        android:icon="@drawable/ic_read_aloud"
+        android:orderInCategory="6"
+        android:title="@string/read_aloud"/>
+    <item
+        android:id="@+id/exit"
+        android:icon="@drawable/ic_stop"
+        android:orderInCategory="5"
+        android:title="@string/exit"/>
+    <item
+        android:id="@+id/load_pref"
+        android:icon="@drawable/ic_action_action_settings"
+        android:orderInCategory="5"
+        android:title="@string/load_pref"/>
+    <item
+        android:id="@+id/open_place4"
+        android:icon="@drawable/red"
+        android:orderInCategory="4"
+        android:title="@string/loading"/>
+    <item
+        android:id="@+id/open_place3"
+        android:icon="@drawable/green"
+        android:orderInCategory="3"
+        android:title="@string/loading"/>
+    <item
+        android:id="@+id/open_place2"
+        android:icon="@drawable/blue"
+        android:orderInCategory="2"
+        android:title="@string/loading"/>
+    <item
+        android:id="@+id/open_place"
+        android:icon="@drawable/yellow"
+        android:orderInCategory="1"
+        android:title="@string/loading"/>
+
+</menu>
