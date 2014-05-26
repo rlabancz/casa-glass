@@ -13,7 +13,7 @@
         android:title="@string/exit"/>
     <item
         android:id="@+id/load_pref"
-        android:icon="@drawable/ic_stop"
+        android:icon="@drawable/ic_action_action_settings"
         android:orderInCategory="5"
         android:title="@string/load_pref"/>
     <item

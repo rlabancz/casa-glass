@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -36,7 +35,6 @@ public class MenuActivity extends Activity {
 	private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			Log.d("CASA", "onService");
 			if (service instanceof CasaService.CasaBinder) {
 				mCompassService = (CasaService.CasaBinder) service;
 				openOptionsMenu();
@@ -52,7 +50,6 @@ public class MenuActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("CASA", "onCreate");
 		bindService(new Intent(this, CasaService.class), mConnection, 0);
 	}
 
@@ -84,6 +81,9 @@ public class MenuActivity extends Activity {
 	}
 
 	private void updateMenuTitles() {
+		MenuItem menuReadAloud = this.menu.findItem(R.id.read_aloud);
+		menuReadAloud.setVisible(false);
+
 		MenuItem menuFirstProperty = this.menu.findItem(R.id.open_place);
 		MenuItem menuSecondProperty = this.menu.findItem(R.id.open_place2);
 		MenuItem menuThirdProperty = this.menu.findItem(R.id.open_place3);
@@ -130,6 +130,7 @@ public class MenuActivity extends Activity {
 		case R.id.read_aloud:
 			mCompassService.readHeadingAloud();
 			return true;
+
 		case R.id.exit:
 			// Stop the service at the end of the message queue for proper options menu
 			// animation. This is only needed when starting an Activity or stopping a Service
@@ -191,5 +192,4 @@ public class MenuActivity extends Activity {
 			break;
 		}
 	}
-
 }

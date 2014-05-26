@@ -68,6 +68,12 @@ public class Landmarks {
 		mPlaces = new ArrayList<Place>();
 
 		properties = new ArrayList<Property>();
+
+		ActionParams.firstProperty = null;
+		ActionParams.secondProperty = null;
+		ActionParams.thirdProperty = null;
+		ActionParams.fourthProperty = null;
+
 		// This class will be instantiated on the service's main thread, and doing I/O on the
 		// main thread can be dangerous if it will block for a noticeable amount of time. In
 		// this case, we assume that the landmark data will be small enough that there is not
@@ -87,22 +93,6 @@ public class Landmarks {
 			mPlaces = ActionParams.placeList;
 		}
 		return mPlaces;
-	}
-
-	/**
-	 * Converts a JSON object that represents a place into a {@link Place} object.
-	 */
-	private Place jsonObjectToPlace(JSONObject object) {
-		String name = object.optString("name");
-		String price = object.optString("price");
-		double latitude = object.optDouble("latitude", Double.NaN);
-		double longitude = object.optDouble("longitude", Double.NaN);
-
-		if (!name.isEmpty() && !Double.isNaN(latitude) && !Double.isNaN(longitude)) {
-			return new Place(latitude, longitude, name, price);
-		} else {
-			return null;
-		}
 	}
 
 	public class SendDataAsync extends AsyncTask<Object, Boolean, String> {

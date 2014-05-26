@@ -8,7 +8,6 @@ import com.google.android.glass.timeline.DirectRenderingCallback;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
