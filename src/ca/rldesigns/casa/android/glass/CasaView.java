@@ -34,7 +34,7 @@ public class CasaView extends View {
 
 	/** Various dimensions and other drawing-related constants. */
 	private static final float NEEDLE_WIDTH = 6;
-	private static final float NEEDLE_HEIGHT = 125;
+	private static final float NEEDLE_HEIGHT = 60;
 	private static final int NEEDLE_COLOR = Color.RED;
 	private static final float TICK_WIDTH = 2;
 	private static final float DIRECTION_TEXT_HEIGHT = 84.0f;
@@ -189,7 +189,7 @@ public class CasaView extends View {
 
 		mPaint.setColor(NEEDLE_COLOR);
 		drawNeedle(canvas, false);
-		drawNeedle(canvas, true);
+		// drawNeedle(canvas, true);
 	}
 
 	/**

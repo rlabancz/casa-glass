@@ -1,5 +1,7 @@
 package ca.rldesigns.casa.android.glass.util;
 
+import java.util.ArrayList;
+
 import ca.rldesigns.casa.android.glass.model.Landmarks;
 import ca.rldesigns.casa.android.glass.model.Place;
 import ca.rldesigns.casa.android.glass.model.Property;
@@ -12,6 +14,8 @@ public class ActionParams {
 	public static LatLng SELECTED_POSITION = null;
 	public static String SELECTED_ADDRESS = "";
 
+	public static ArrayList<Place> placeList = null;
+
 	public static double LAST_LAT;
 	public static double LAST_LON;
 
@@ -20,6 +24,8 @@ public class ActionParams {
 	public static Property selectedProperty = null;
 	public static Property firstProperty = null;
 	public static Property secondProperty = null;
+	public static Property thirdProperty = null;
+	public static Property fourthProperty = null;
 
 	public static boolean SetupDone = false;
 

@@ -13,6 +13,8 @@ import android.view.MenuItem;
 
 import java.lang.Runnable;
 
+import com.google.zxing.client.glass.CaptureActivity;
+
 import ca.rldesigns.casa.android.glass.model.Landmarks;
 import ca.rldesigns.casa.android.glass.util.ActionParams;
 import ca.rldesigns.casa.android.glass.util.RequestCodes;
@@ -84,6 +86,8 @@ public class MenuActivity extends Activity {
 	private void updateMenuTitles() {
 		MenuItem menuFirstProperty = this.menu.findItem(R.id.open_place);
 		MenuItem menuSecondProperty = this.menu.findItem(R.id.open_place2);
+		MenuItem menuThirdProperty = this.menu.findItem(R.id.open_place3);
+		MenuItem menuFourthProperty = this.menu.findItem(R.id.open_place4);
 		if (ActionParams.firstProperty != null) {
 			menuFirstProperty.setTitle(ActionParams.firstProperty.getPrice() + " " + ActionParams.firstProperty.getAddress());
 		} else {
@@ -91,8 +95,24 @@ public class MenuActivity extends Activity {
 		}
 		if (ActionParams.secondProperty != null) {
 			menuSecondProperty.setTitle(ActionParams.secondProperty.getPrice() + ActionParams.secondProperty.getAddress());
+			menuSecondProperty.setVisible(true);
 		} else {
 			menuSecondProperty.setTitle("loading...");
+			menuSecondProperty.setVisible(false);
+		}
+		if (ActionParams.thirdProperty != null) {
+			menuThirdProperty.setTitle(ActionParams.thirdProperty.getPrice() + " " + ActionParams.thirdProperty.getAddress());
+			menuThirdProperty.setVisible(true);
+		} else {
+			menuThirdProperty.setTitle("loading...");
+			menuThirdProperty.setVisible(false);
+		}
+		if (ActionParams.fourthProperty != null) {
+			menuFourthProperty.setTitle(ActionParams.fourthProperty.getPrice() + " " + ActionParams.fourthProperty.getAddress());
+			menuFourthProperty.setVisible(true);
+		} else {
+			menuFourthProperty.setTitle("loading...");
+			menuFourthProperty.setVisible(false);
 		}
 	}
 
@@ -115,7 +135,6 @@ public class MenuActivity extends Activity {
 			// animation. This is only needed when starting an Activity or stopping a Service
 			// that published a LiveCard.
 			mHandler.post(new Runnable() {
-
 				@Override
 				public void run() {
 					stopService(new Intent(MenuActivity.this, CasaService.class));
@@ -123,13 +142,24 @@ public class MenuActivity extends Activity {
 			});
 			return true;
 
+		case R.id.load_pref:
+			startActivity(new Intent(this, CaptureActivity.class));
+			return true;
+
 		case R.id.open_place:
 			ActionParams.selectedProperty = ActionParams.firstProperty;
 			startActivity(new Intent(this, PropertyMenuActivity.class));
 			return true;
-
 		case R.id.open_place2:
 			ActionParams.selectedProperty = ActionParams.secondProperty;
+			startActivity(new Intent(this, PropertyMenuActivity.class));
+			return true;
+		case R.id.open_place3:
+			ActionParams.selectedProperty = ActionParams.thirdProperty;
+			startActivity(new Intent(this, PropertyMenuActivity.class));
+			return true;
+		case R.id.open_place4:
+			ActionParams.selectedProperty = ActionParams.fourthProperty;
 			startActivity(new Intent(this, PropertyMenuActivity.class));
 			return true;
 

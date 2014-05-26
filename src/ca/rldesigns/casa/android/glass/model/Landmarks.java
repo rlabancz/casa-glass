@@ -45,7 +45,7 @@ public class Landmarks {
 	/**
 	 * The list of landmarks loaded from resources.
 	 */
-	private final ArrayList<Place> mPlaces;
+	private ArrayList<Place> mPlaces;
 
 	/**
 	 * Initializes a new {@code Landmarks} object by loading the landmarks from the resource bundle.
@@ -82,63 +82,11 @@ public class Landmarks {
 		}
 	}
 
-	/**
-	 * Gets a list of landmarks that are within ten kilometers of the specified coordinates. This function will never return null; if there are no
-	 * locations within that threshold, then an empty list will be returned.
-	 */
-	public List<Place> getNearbyLandmarks(double latitude, double longitude, int results) {
-		mPlaces.clear();
-		new SendDataAsync().execute(this, latitude, longitude, results);
-		Log.d(TAG, "got places");
-
-		int size;
-		Property property;
-		Log.d(TAG, "size: " + Integer.toString(properties.size()) + " results: " + results);
-		if (properties.size() < results) {
-			size = properties.size();
-		} else {
-			size = results;
+	public List<Place> getNearbyLandmarks(int results) {
+		if (mPlaces.isEmpty()) {
+			mPlaces = ActionParams.placeList;
 		}
-		Place newPlace = null;
-		for (int i = 0; i < size; i++) {
-			property = properties.get(i);
-			if (i == 0) {
-				ActionParams.firstProperty = properties.get(0);
-			}
-			if (i == 1) {
-				ActionParams.secondProperty = properties.get(1);
-			}
-			Log.d(TAG, "adding " + property.getAddress());
-			newPlace = new Place(property.getLat(), property.getLng(), property.getAddress(), property.getPrice());
-			if (!mPlaces.contains(newPlace)) {
-				mPlaces.add(newPlace);
-			}
-		}
-
 		return mPlaces;
-	}
-
-	/**
-	 * Populates the internal places list from places found in a JSON string. This string should contain a root object with a "landmarks" property
-	 * that is an array of objects that represent places. A place has three properties: name, latitude, and longitude.
-	 */
-	public void populatePlaceList(String jsonString) {
-		try {
-			JSONObject json = new JSONObject(jsonString);
-			JSONArray array = json.optJSONArray("landmarks");
-
-			if (array != null) {
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject object = array.optJSONObject(i);
-					Place place = jsonObjectToPlace(object);
-					if (place != null) {
-						mPlaces.add(place);
-					}
-				}
-			}
-		} catch (JSONException e) {
-			Log.e(TAG, "Could not parse landmarks JSON string", e);
-		}
 	}
 
 	/**
@@ -231,8 +179,6 @@ public class Landmarks {
 				addressString += "%3C/ListingSearchMap%3E";
 				addressString = addressString.toString();
 
-				Log.d(TAG, addressString);
-
 				if (addressString.equals(""))
 					return ResultCodes.ERROR;
 
@@ -294,9 +240,8 @@ public class Landmarks {
 				jsonObject = new JSONObject(jsonString);
 				if (jsonObject.has("MapSearchResults")) {
 					JSONArray jArr = jsonObject.getJSONArray("MapSearchResults");
-
+					Log.d(TAG, "search result: " + Integer.toString(jArr.length()));
 					for (int i = 0; i < jArr.length(); i++) {
-
 						JSONObject obj = jArr.getJSONObject(i);
 						String address = obj.getString("Address");
 
@@ -315,8 +260,41 @@ public class Landmarks {
 							properties.add(new Property(address, price, lat, lng, picture, bedroom, bathroom));
 						}
 					}
-
 					Log.d(TAG, "done parsing");
+
+					int size;
+					Property property = null;
+					Log.d(TAG, "size: " + Integer.toString(properties.size()) + " results: " + results);
+					if (properties.size() < results) {
+						size = properties.size();
+					} else {
+						size = results;
+					}
+
+					Place newPlace = null;
+					for (int i = 0; i < size; i++) {
+						property = properties.get(i);
+						if (i == 0) {
+							ActionParams.firstProperty = properties.get(0);
+						}
+						if (i == 1) {
+							ActionParams.secondProperty = properties.get(1);
+						}
+						if (i == 2) {
+							ActionParams.thirdProperty = properties.get(2);
+						}
+						if (i == 3) {
+							ActionParams.fourthProperty = properties.get(3);
+						}
+						Log.d(TAG, "adding " + property.getAddress());
+						newPlace = new Place(property.getLat(), property.getLng(), property.getAddress(), property.getPrice());
+						if (!mPlaces.contains(newPlace)) {
+							mPlaces.add(newPlace);
+						}
+					}
+					if (!mPlaces.isEmpty()) {
+						ActionParams.placeList = mPlaces;
+					}
 
 					return true;
 				} else {

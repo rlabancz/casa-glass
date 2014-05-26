@@ -278,11 +278,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 					ActionParams.savedPreference = savedPreference;
 
-					if (mBound) {
-						Log.d("CASA", "sending bind");
-						casaService.startLandmarks();
-						this.finish();
-					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -292,6 +287,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			statusView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.max(14, 56 - text.length() / 4));
 			statusView.setVisibility(View.VISIBLE);
 			this.result = result;
+
+			if (mBound) {
+				Log.d("CASA", "sending bind");
+				casaService.startLandmarks();
+				this.finish();
+			}
 		}
 	}
 
@@ -299,8 +300,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		ParsedResult parsed = ResultParser.parseResult(result);
 		Intent intent;
 		if (parsed.getType() == ParsedResultType.URI) {
+			Log.d(TAG, "ACTION_VIEW");
 			intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((URIParsedResult) parsed).getURI()));
 		} else {
+			Log.d(TAG, "ACTION_WEB_SEARCH");
 			intent = new Intent(Intent.ACTION_WEB_SEARCH);
 			intent.putExtra("query", ((TextParsedResult) parsed).getText());
 		}
