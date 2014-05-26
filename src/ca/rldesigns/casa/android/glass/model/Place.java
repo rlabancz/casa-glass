@@ -5,14 +5,17 @@ package ca.rldesigns.casa.android.glass.model;
  */
 public class Place {
 
+	private final int mIcon;
 	private final double mLatitude;
 	private final double mLongitude;
 	private final String mName;
 	private final String mPrice;
 
 	/**
-	 * Initializes a new place with the specified coordinates and name.
+	 * Initialises a new place with the specified coordinates and name.
 	 * 
+	 * @param icon
+	 *            the icon of the place
 	 * @param latitude
 	 *            the latitude of the place
 	 * @param longitude
@@ -20,11 +23,21 @@ public class Place {
 	 * @param name
 	 *            the name of the place
 	 */
-	public Place(double latitude, double longitude, String name, String price) {
+	public Place(int icon, double latitude, double longitude, String name, String price) {
+		mIcon = icon;
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mName = name;
 		mPrice = price;
+	}
+
+	/**
+	 * Gets the icon of the place.
+	 * 
+	 * @return the icon of the place
+	 */
+	public int getIcon() {
+		return mIcon;
 	}
 
 	/**

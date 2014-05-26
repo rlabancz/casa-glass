@@ -19,6 +19,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -31,6 +32,8 @@ import java.util.List;
  * display mark the current heading.
  */
 public class CasaView extends View {
+
+	private static final String TAG = "CASA";
 
 	/** Various dimensions and other drawing-related constants. */
 	private static final float NEEDLE_WIDTH = 6;
@@ -74,7 +77,10 @@ public class CasaView extends View {
 	private final NumberFormat mDistanceFormat;
 	private final ValueAnimator mAnimator;
 
+	private Context mContext;
+
 	public CasaView(Context context) {
+
 		this(context, null, 0);
 	}
 
@@ -84,6 +90,8 @@ public class CasaView extends View {
 
 	public CasaView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+
+		mContext = context;
 
 		mPaint = new Paint();
 		mPaint.setStyle(Paint.Style.FILL);
@@ -241,15 +249,27 @@ public class CasaView extends View {
 				// location), and compute the relative bearing from the user's location to the
 				// place's location. This determines the position on the compass view where the
 				// pin will be drawn.
+				double latitude2;
+				double longitude2;
+				float bearing;
+				int icon;
+				String name = "";
+				String price = "";
+				double distanceKm;
+				String text = "";
+				Bitmap placeBitmap;
 				for (Place place : mNearbyPlaces) {
-					double latitude2 = place.getLatitude();
-					double longitude2 = place.getLongitude();
-					float bearing = MathUtils.getBearing(latitude1, longitude1, latitude2, longitude2);
+					latitude2 = place.getLatitude();
+					longitude2 = place.getLongitude();
+					bearing = MathUtils.getBearing(latitude1, longitude1, latitude2, longitude2);
 
-					String name = place.getName();
-					String price = place.getPrice();
-					double distanceKm = MathUtils.getDistance(latitude1, longitude1, latitude2, longitude2);
-					String text = getContext().getResources().getString(R.string.place_text_format, name, mDistanceFormat.format(distanceKm));
+					icon = place.getIcon();
+					placeBitmap = BitmapFactory.decodeResource(mContext.getResources(), icon);
+
+					name = place.getName();
+					price = place.getPrice();
+					distanceKm = MathUtils.getDistance(latitude1, longitude1, latitude2, longitude2);
+					text = getContext().getResources().getString(R.string.place_text_format, name, mDistanceFormat.format(distanceKm));
 					text = price + text;
 					// Measure the text and offset the text bounds to the location where the text
 					// will finally be drawn.
@@ -288,8 +308,12 @@ public class CasaView extends View {
 					// directions. This means some places may not be drawn, even if they're nearby.
 					if (numberOfTries <= MAX_OVERLAPPING_PLACE_NAMES) {
 						mAllBounds.add(textBounds);
-
-						canvas.drawBitmap(mPlaceBitmap, offset + bearing * pixelsPerDegree - PLACE_PIN_WIDTH / 2, textBounds.top + 2, mPaint);
+						Log.d(TAG, "rendering: " + text);
+						if (placeBitmap == null) {
+							canvas.drawBitmap(mPlaceBitmap, offset + bearing * pixelsPerDegree - PLACE_PIN_WIDTH / 2, textBounds.top + 2, mPaint);
+						} else {
+							canvas.drawBitmap(placeBitmap, offset + bearing * pixelsPerDegree - PLACE_PIN_WIDTH / 2, textBounds.top + 2, mPaint);
+						}
 						canvas.drawText(text, offset + bearing * pixelsPerDegree + PLACE_PIN_WIDTH / 2 + PLACE_TEXT_MARGIN, textBounds.top
 								+ PLACE_TEXT_HEIGHT, mPlacePaint);
 					}

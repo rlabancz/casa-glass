@@ -1,6 +1,7 @@
 package ca.rldesigns.casa.android.glass.model;
 
 public class Property {
+	private int icon;
 	private String address;
 	private String price;
 	private double lat;
@@ -17,6 +18,14 @@ public class Property {
 		this.picture = picture;
 		this.bedrooms = bedrooms;
 		this.bathrooms = bathrooms;
+	}
+
+	public int getIcon() {
+		return icon;
+	}
+
+	public void setIcon(int icon) {
+		this.icon = icon;
 	}
 
 	public String getAddress() {

@@ -64,20 +64,15 @@ public class PropertyMenuActivity extends Activity {
 		card.setText(mProperty.getBedrooms() + " / " + mProperty.getBathrooms());
 		card.setFootnote("Bedrooms / Bathrooms");
 		card.setImageLayout(Card.ImageLayout.FULL);
-		if (mProperty.getAddress().contains("60 SOUTH TOWN")) {
-			card.addImage(R.drawable.n2862962_1);
-		} else if (mProperty.getAddress().contains("23 COX BLVD")) {
-			card.addImage(R.drawable.n2865756_1);
-		} else if (mProperty.getAddress().contains("33 CLEGG RD")) {
-			card.addImage(R.drawable.n2878118_1);
-		}
-		//
+		/*
+		 * if (mProperty.getAddress().contains("60 SOUTH TOWN")) card.addImage(R.drawable.n2862962_1);
+		 */
 		mCards.add(card);
 
 		createCards();
 
 		mCardScrollView = new CardScrollView(this);
-		ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
+		PropertyCardScrollAdapter adapter = new PropertyCardScrollAdapter();
 		mCardScrollView.setAdapter(adapter);
 		mCardScrollView.activate();
 		setContentView(mCardScrollView);
@@ -101,7 +96,7 @@ public class PropertyMenuActivity extends Activity {
 		getAdditionalInfo(mProperty, fireStationCard, bikeStationCard, schoolCard);
 	}
 
-	private class ExampleCardScrollAdapter extends CardScrollAdapter {
+	private class PropertyCardScrollAdapter extends CardScrollAdapter {
 
 		@Override
 		public int getPosition(Object item) {
@@ -122,7 +117,6 @@ public class PropertyMenuActivity extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			return mCards.get(position).getView(convertView, parent);
 		}
-
 	}
 
 	// Misc stuff
@@ -163,8 +157,7 @@ public class PropertyMenuActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.read_aloud:
-			return true;
+
 		case R.id.exit:
 			this.finish();
 			return true;

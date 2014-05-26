@@ -1,5 +1,6 @@
 package ca.rldesigns.casa.android.glass.model;
 
+import ca.rldesigns.casa.android.glass.R;
 import ca.rldesigns.casa.android.glass.util.ActionParams;
 import ca.rldesigns.casa.android.glass.util.Formatter;
 import ca.rldesigns.casa.android.glass.util.MathUtils;
@@ -262,22 +263,31 @@ public class Landmarks {
 					}
 
 					Place newPlace = null;
+					int icon = R.drawable.place_mark;
 					for (int i = 0; i < size; i++) {
 						property = properties.get(i);
 						if (i == 0) {
+							icon = R.drawable.yellow_mini;
 							ActionParams.firstProperty = properties.get(0);
+							ActionParams.firstProperty.setIcon(icon);
 						}
 						if (i == 1) {
+							icon = R.drawable.blue_mini;
 							ActionParams.secondProperty = properties.get(1);
+							ActionParams.secondProperty.setIcon(icon);
 						}
 						if (i == 2) {
+							icon = R.drawable.green_mini;
 							ActionParams.thirdProperty = properties.get(2);
+							ActionParams.thirdProperty.setIcon(icon);
 						}
 						if (i == 3) {
+							icon = R.drawable.red_mini;
 							ActionParams.fourthProperty = properties.get(3);
+							ActionParams.fourthProperty.setIcon(icon);
 						}
 						Log.d(TAG, "adding " + property.getAddress());
-						newPlace = new Place(property.getLat(), property.getLng(), property.getAddress(), property.getPrice());
+						newPlace = new Place(icon, property.getLat(), property.getLng(), property.getAddress(), property.getPrice());
 						if (!mPlaces.contains(newPlace)) {
 							mPlaces.add(newPlace);
 						}
