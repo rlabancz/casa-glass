@@ -269,7 +269,7 @@ public class CasaView extends View {
 					price = place.getPrice();
 					distanceKm = MathUtils.getDistance(latitude1, longitude1, latitude2, longitude2);
 					text = getContext().getResources().getString(R.string.place_text_format, name, mDistanceFormat.format(distanceKm));
-					text = price + text;
+					text = price + " - " + text;
 					// Measure the text and offset the text bounds to the location where the text
 					// will finally be drawn.
 					Rect textBounds = new Rect();

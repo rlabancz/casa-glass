@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -42,14 +41,10 @@ import ca.rldesigns.casa.android.glass.CasaService.CasaBinder;
 import ca.rldesigns.casa.android.glass.R;
 import ca.rldesigns.casa.android.glass.model.SavedPreference;
 import ca.rldesigns.casa.android.glass.util.ActionParams;
+import ca.rldesigns.casa.android.glass.util.ResultCodes;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.zxing.Result;
-import com.google.zxing.client.result.ParsedResult;
-import com.google.zxing.client.result.ParsedResultType;
-import com.google.zxing.client.result.ResultParser;
-import com.google.zxing.client.result.TextParsedResult;
-import com.google.zxing.client.result.URIParsedResult;
 
 import java.io.IOException;
 
@@ -58,11 +53,13 @@ import org.json.JSONObject;
 
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
-	private static final String TAG = CaptureActivity.class.getSimpleName();
+	private static final String TAG = "CASA";
 	private static final String SCAN_ACTION = "com.google.zxing.client.android.SCAN";
 
 	private SharedPreferences savedSettings;
 	SharedPreferences.Editor editor;
+
+	TextView statusView;
 
 	private boolean hasSurface;
 	private boolean returnResult;
@@ -88,6 +85,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		Window window = getWindow();
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.capture);
+
+		statusView = (TextView) findViewById(R.id.status_view);
 	}
 
 	@Override
@@ -127,6 +126,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			surfaceHolder.addCallback(this);
 			holderWithCallback = surfaceHolder;
 		}
+
+		statusView.setText("Scan QR Code to begin");
+		statusView.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -174,9 +176,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (result != null) {
 			switch (keyCode) {
-			case KeyEvent.KEYCODE_DPAD_CENTER:
-				handleResult(result);
-				return true;
 			case KeyEvent.KEYCODE_BACK:
 				reset();
 				return true;
@@ -215,7 +214,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			setResult(RESULT_OK, scanResult);
 			finish();
 		} else {
-			TextView statusView = (TextView) findViewById(R.id.status_view);
 			String text = result.getText();
 			if (text != null) {
 				try {
@@ -283,31 +281,17 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 				}
 			}
 
-			statusView.setText(text);
+			statusView.setText("Settings successfully loaded");
 			statusView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.max(14, 56 - text.length() / 4));
 			statusView.setVisibility(View.VISIBLE);
+			this.setResult(ResultCodes.SETTINGS_RECIEVED);
 			this.result = result;
-
 			if (mBound) {
 				Log.d("CASA", "sending bind");
 				casaService.startLandmarks();
 				this.finish();
 			}
 		}
-	}
-
-	private void handleResult(Result result) {
-		ParsedResult parsed = ResultParser.parseResult(result);
-		Intent intent;
-		if (parsed.getType() == ParsedResultType.URI) {
-			Log.d(TAG, "ACTION_VIEW");
-			intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((URIParsedResult) parsed).getURI()));
-		} else {
-			Log.d(TAG, "ACTION_WEB_SEARCH");
-			intent = new Intent(Intent.ACTION_WEB_SEARCH);
-			intent.putExtra("query", ((TextParsedResult) parsed).getText());
-		}
-		startActivity(intent);
 	}
 
 	private synchronized void reset() {

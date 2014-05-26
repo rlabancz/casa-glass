@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,6 +24,7 @@ import ca.rldesigns.casa.android.glass.util.ResultCodes;
  * This activity manages the options menu that appears when the user taps on the compass's live card.
  */
 public class MenuActivity extends Activity {
+	private static final String TAG = "CASA";
 
 	private final Handler mHandler = new Handler();
 
@@ -144,7 +146,8 @@ public class MenuActivity extends Activity {
 			return true;
 
 		case R.id.load_pref:
-			startActivity(new Intent(this, CaptureActivity.class));
+			Intent intentGetSettings = new Intent(this, CaptureActivity.class);
+			this.startActivityForResult(intentGetSettings, RequestCodes.REQUEST_SETTINGS);
 			return true;
 
 		case R.id.open_place:
@@ -187,7 +190,8 @@ public class MenuActivity extends Activity {
 		switch (requestCode) {
 		case RequestCodes.REQUEST_SETTINGS:
 			if (resultCode == ResultCodes.SETTINGS_RECIEVED) {
-				bindService(new Intent(this, CasaService.class), mConnection, 0);
+				Log.d(TAG, "got updated settings");
+				mLandmarks = new Landmarks(this, ActionParams.SelectedLatLng);
 			}
 			break;
 		}

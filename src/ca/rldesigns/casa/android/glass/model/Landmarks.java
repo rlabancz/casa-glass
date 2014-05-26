@@ -40,10 +40,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class provides access to a list of hard-coded landmarks (located in {@code res/raw/landmarks.json}) that will appear on the compass when the
- * user is near them.
- */
 public class Landmarks {
 
 	public ArrayList<Property> properties;
@@ -62,19 +58,11 @@ public class Landmarks {
 		mPlaces = new ArrayList<Place>();
 
 		properties = new ArrayList<Property>();
-		// This class will be instantiated on the service's main thread, and doing I/O on the
-		// main thread can be dangerous if it will block for a noticeable amount of time. In
-		// this case, we assume that the landmark data will be small enough that there is not
-		// a significant penalty to the application. If the landmark data were much larger,
-		// we may want to load it in the background instead.
-		// String jsonString = readLandmarksResource(context);
 		Log.d(TAG, "Landmarks init");
-		// new SendDataAsync().execute(this, 43.8565092, -79.3502768, 5);
 	}
 
 	public Landmarks(Context context, LatLng coordinates) {
 		mPlaces = new ArrayList<Place>();
-
 		properties = new ArrayList<Property>();
 
 		ActionParams.firstProperty = null;
@@ -82,12 +70,6 @@ public class Landmarks {
 		ActionParams.thirdProperty = null;
 		ActionParams.fourthProperty = null;
 
-		// This class will be instantiated on the service's main thread, and doing I/O on the
-		// main thread can be dangerous if it will block for a noticeable amount of time. In
-		// this case, we assume that the landmark data will be small enough that there is not
-		// a significant penalty to the application. If the landmark data were much larger,
-		// we may want to load it in the background instead.
-		// String jsonString = readLandmarksResource(context);
 		if (coordinates != null) {
 			Log.d(TAG, "sending web request");
 			new SendDataAsync().execute(this, coordinates.latitude, coordinates.longitude, 5);
