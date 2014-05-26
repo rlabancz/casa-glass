@@ -25,6 +25,7 @@ public class ActionParams {
 
 	public static SavedPreference savedPreference = null;
 	public static LatLng SelectedLatLng = null;
+	public static double Range = 0;
 	public static String Date = "";
 	public static String PriceMinValue = "";
 	public static String PriceMaxValue = "";

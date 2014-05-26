@@ -9,6 +9,7 @@ public class ApplicationData {
 	public static final String SELECTED_ADDRESS = "SelectedAddress";
 	public static final String SELECTED_LAT = "SelectedLat";
 	public static final String SELECTED_LNG = "SelectedLng";
+	public static final String RANGE = "Range";
 	public static final String START_DATE = "StartDate";
 	public static final String PRICE_MIN = "PriceMin";
 	public static final String PRICE_MAX = "PriceMax";
@@ -39,6 +40,10 @@ public class ApplicationData {
 
 	public String getSelectedLng() {
 		return getString(SELECTED_LNG);
+	}
+
+	public String getRange() {
+		return getString(RANGE);
 	}
 
 	public String getStartDate() {

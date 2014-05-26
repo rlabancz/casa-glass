@@ -228,6 +228,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 					LatLng selectedLatLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
 					ActionParams.SelectedLatLng = selectedLatLng;
 
+					int range = (int) settings.get("r");
+					editor.putInt(ApplicationData.RANGE, range);
+					ActionParams.Range = (double) range;
+
 					String date = (String) settings.get("d");
 					date = date.replace('.', '/');
 					editor.putString(ApplicationData.START_DATE, date);
@@ -268,9 +272,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 					editor.commit();
 
-					SavedPreference savedPreference = new SavedPreference(ActionParams.SelectedLatLng, ActionParams.Date, ActionParams.PriceMinValue,
-							ActionParams.PriceMaxValue, ActionParams.BedroomMinValue, ActionParams.BedroomMaxValue, ActionParams.BathroomMinValue,
-							ActionParams.BathroomMaxValue, ActionParams.StoriesMinValue, ActionParams.StoriesMaxValue);
+					SavedPreference savedPreference = new SavedPreference(ActionParams.SelectedLatLng, ActionParams.Range, ActionParams.Date,
+							ActionParams.PriceMinValue, ActionParams.PriceMaxValue, ActionParams.BedroomMinValue, ActionParams.BedroomMaxValue,
+							ActionParams.BathroomMinValue, ActionParams.BathroomMaxValue, ActionParams.StoriesMinValue, ActionParams.StoriesMaxValue);
 
 					ActionParams.savedPreference = savedPreference;
 

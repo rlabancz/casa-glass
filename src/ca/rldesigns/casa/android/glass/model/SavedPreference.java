@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class SavedPreference {
 
 	private LatLng SelectedLatLng;
+	private double Range;
 	private String Date;
 	private String PriceMinValue;
 	private String PriceMaxValue;
@@ -15,10 +16,11 @@ public class SavedPreference {
 	private String StoriesMinValue;
 	private String StoriesMaxValue;
 
-	public SavedPreference(LatLng SelectedLatLng, String Date, String PriceMinValue, String PriceMaxValue, String BedroomMinValue,
+	public SavedPreference(LatLng SelectedLatLng, double Range, String Date, String PriceMinValue, String PriceMaxValue, String BedroomMinValue,
 			String BedroomMaxValue, String BathroomMinValue, String BathroomMaxValue, String StoriesMinValue, String StoriesMaxValue) {
 
 		this.SelectedLatLng = SelectedLatLng;
+		this.Range = Range;
 		this.Date = Date;
 		this.PriceMinValue = PriceMinValue;
 		this.PriceMaxValue = PriceMaxValue;
@@ -36,6 +38,14 @@ public class SavedPreference {
 
 	public void setSelectedLatLng(LatLng selectedLatLng) {
 		SelectedLatLng = selectedLatLng;
+	}
+
+	public double getRange() {
+		return Range;
+	}
+
+	public void setRange(double range) {
+		Range = range;
 	}
 
 	public String getDate() {

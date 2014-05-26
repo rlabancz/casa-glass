@@ -2,6 +2,7 @@ package ca.rldesigns.casa.android.glass.model;
 
 import ca.rldesigns.casa.android.glass.util.ActionParams;
 import ca.rldesigns.casa.android.glass.util.Formatter;
+import ca.rldesigns.casa.android.glass.util.MathUtils;
 import ca.rldesigns.casa.android.glass.util.ResultCodes;
 
 import android.content.Context;
@@ -306,13 +307,13 @@ public class Landmarks {
 						String bedroom = obj.getString("Bedrooms");
 						String bathroom = obj.getString("Bathrooms");
 
-						/*
-						 * if (MathUtils.getDistance(latitude, longitude, knownPlace.getLatitude(), knownPlace.getLongitude()) <= MAX_DISTANCE_KM) {
-						 * nearbyPlaces.add(knownPlace); }
-						 */
-
-						properties.add(new Property(address, price, lat, lng, picture, bedroom, bathroom));
-						// Log.d(TAG, "address: " + address);
+						if (ActionParams.Range > 0) {
+							if (MathUtils.getDistance(ActionParams.SelectedLatLng.latitude, ActionParams.SelectedLatLng.longitude, lat, lng) <= ActionParams.Range) {
+								properties.add(new Property(address, price, lat, lng, picture, bedroom, bathroom));
+							}
+						} else {
+							properties.add(new Property(address, price, lat, lng, picture, bedroom, bathroom));
+						}
 					}
 
 					Log.d(TAG, "done parsing");

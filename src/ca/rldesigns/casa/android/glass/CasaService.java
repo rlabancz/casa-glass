@@ -131,7 +131,7 @@ public class CasaService extends Service {
 			} else {
 				loadSettings();
 				Log.d(TAG, "Settings found");
-			
+
 				mLandmarks = new Landmarks(this, ActionParams.SelectedLatLng);
 			}
 		} else {
@@ -145,6 +145,9 @@ public class CasaService extends Service {
 		double lat = (double) savedSettings.getFloat(ApplicationData.SELECTED_LAT, 0);
 		double lng = (double) savedSettings.getFloat(ApplicationData.SELECTED_LNG, 0);
 		ActionParams.SelectedLatLng = new LatLng(lat, lng);
+
+		double range = (double) savedSettings.getInt(ApplicationData.RANGE, 5);
+		ActionParams.Range = range;
 
 		Calendar cal = Calendar.getInstance();
 		long oneYear = (long) 3.154E10;
@@ -164,9 +167,9 @@ public class CasaService extends Service {
 		ActionParams.StoriesMinValue = Integer.toString(savedSettings.getInt(ApplicationData.STORIES_MIN, 0));
 		ActionParams.StoriesMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.STORIES_MAX, 0));
 
-		SavedPreference savedPreference = new SavedPreference(ActionParams.SelectedLatLng, ActionParams.Date, ActionParams.PriceMinValue,
-				ActionParams.PriceMaxValue, ActionParams.BedroomMinValue, ActionParams.BedroomMaxValue, ActionParams.BathroomMinValue,
-				ActionParams.BathroomMaxValue, ActionParams.StoriesMinValue, ActionParams.StoriesMaxValue);
+		SavedPreference savedPreference = new SavedPreference(ActionParams.SelectedLatLng, ActionParams.Range, ActionParams.Date,
+				ActionParams.PriceMinValue, ActionParams.PriceMaxValue, ActionParams.BedroomMinValue, ActionParams.BedroomMaxValue,
+				ActionParams.BathroomMinValue, ActionParams.BathroomMaxValue, ActionParams.StoriesMinValue, ActionParams.StoriesMaxValue);
 
 		ActionParams.savedPreference = savedPreference;
 	}
