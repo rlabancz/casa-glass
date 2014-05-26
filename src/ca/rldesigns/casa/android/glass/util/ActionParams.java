@@ -26,6 +26,7 @@ public class ActionParams {
 	public static Property secondProperty = null;
 	public static Property thirdProperty = null;
 	public static Property fourthProperty = null;
+	public static Property fifthProperty = null;
 
 	public static boolean SetupDone = false;
 

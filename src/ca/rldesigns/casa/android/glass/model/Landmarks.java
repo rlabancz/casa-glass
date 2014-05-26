@@ -69,6 +69,7 @@ public class Landmarks {
 		ActionParams.secondProperty = null;
 		ActionParams.thirdProperty = null;
 		ActionParams.fourthProperty = null;
+		ActionParams.fifthProperty = null;
 
 		if (coordinates != null) {
 			Log.d(TAG, "sending web request");
@@ -278,6 +279,13 @@ public class Landmarks {
 							ActionParams.fourthProperty.setId(i);
 							ActionParams.fourthProperty.setIcon(icon);
 							new DownloadImagesTask().execute(ActionParams.fourthProperty);
+						}
+						if (i == 4) {
+							icon = R.drawable.white_mini;
+							ActionParams.fifthProperty = properties.get(i);
+							ActionParams.fifthProperty.setId(i);
+							ActionParams.fifthProperty.setIcon(icon);
+							new DownloadImagesTask().execute(ActionParams.fifthProperty);
 						}
 						Log.d(TAG, "adding " + property.getAddress());
 						newPlace = new Place(icon, property.getLat(), property.getLng(), property.getAddress(), property.getPrice());

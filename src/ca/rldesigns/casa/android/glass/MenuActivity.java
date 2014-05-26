@@ -90,6 +90,7 @@ public class MenuActivity extends Activity {
 		MenuItem menuSecondProperty = this.menu.findItem(R.id.open_place2);
 		MenuItem menuThirdProperty = this.menu.findItem(R.id.open_place3);
 		MenuItem menuFourthProperty = this.menu.findItem(R.id.open_place4);
+		MenuItem menuFifthProperty = this.menu.findItem(R.id.open_place5);
 		if (ActionParams.firstProperty != null) {
 			menuFirstProperty.setTitle(ActionParams.firstProperty.getPrice() + " " + ActionParams.firstProperty.getAddress());
 		} else {
@@ -115,6 +116,13 @@ public class MenuActivity extends Activity {
 		} else {
 			menuFourthProperty.setTitle("loading...");
 			menuFourthProperty.setVisible(false);
+		}
+		if (ActionParams.fifthProperty != null) {
+			menuFifthProperty.setTitle(ActionParams.fifthProperty.getPrice() + " " + ActionParams.fifthProperty.getAddress());
+			menuFifthProperty.setVisible(true);
+		} else {
+			menuFifthProperty.setTitle("loading...");
+			menuFifthProperty.setVisible(false);
 		}
 	}
 
@@ -164,6 +172,10 @@ public class MenuActivity extends Activity {
 			return true;
 		case R.id.open_place4:
 			ActionParams.selectedProperty = ActionParams.fourthProperty;
+			startActivity(new Intent(this, PropertyMenuActivity.class));
+			return true;
+		case R.id.open_place5:
+			ActionParams.selectedProperty = ActionParams.fifthProperty;
 			startActivity(new Intent(this, PropertyMenuActivity.class));
 			return true;
 
