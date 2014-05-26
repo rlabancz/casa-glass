@@ -9,9 +9,7 @@ public class ApplicationData {
 	public static final String SELECTED_ADDRESS = "SelectedAddress";
 	public static final String SELECTED_LAT = "SelectedLat";
 	public static final String SELECTED_LNG = "SelectedLng";
-	public static final String START_DATE_YEAR = "StartDateYear";
-	public static final String START_DATE_MONTH = "StartDateMonth";
-	public static final String START_DATE_DAY = "StartDateDay";
+	public static final String START_DATE = "StartDate";
 	public static final String PRICE_MIN = "PriceMin";
 	public static final String PRICE_MAX = "PriceMax";
 	public static final String BATHROOM_MIN = "BathroomMin";
@@ -43,16 +41,8 @@ public class ApplicationData {
 		return getString(SELECTED_LNG);
 	}
 
-	public String getStartDateYear() {
-		return getString(START_DATE_YEAR);
-	}
-
-	public String getStartDateMonth() {
-		return getString(START_DATE_MONTH);
-	}
-
-	public String getStartDateDay() {
-		return getString(START_DATE_DAY);
+	public String getStartDate() {
+		return getString(START_DATE);
 	}
 
 	public String getPriceMin() {

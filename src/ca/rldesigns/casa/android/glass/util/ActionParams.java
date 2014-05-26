@@ -3,6 +3,7 @@ package ca.rldesigns.casa.android.glass.util;
 import ca.rldesigns.casa.android.glass.model.Landmarks;
 import ca.rldesigns.casa.android.glass.model.Place;
 import ca.rldesigns.casa.android.glass.model.Property;
+import ca.rldesigns.casa.android.glass.model.SavedPreference;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -21,11 +22,10 @@ public class ActionParams {
 	public static Property secondProperty = null;
 
 	public static boolean SetupDone = false;
+
+	public static SavedPreference savedPreference = null;
 	public static LatLng SelectedLatLng = null;
 	public static String Date = "";
-	public static int Year = 0;
-	public static int MonthOfYear = 0;
-	public static int DayOfMonth = 0;
 	public static String PriceMinValue = "";
 	public static String PriceMaxValue = "";
 	public static String BedroomMinValue = "";

@@ -16,11 +16,17 @@
 
 package com.google.zxing.client.glass;
 
+import static ca.rldesigns.casa.android.glass.ApplicationData.DATABASE_NAME;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -30,7 +36,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import ca.rldesigns.casa.android.glass.ApplicationData;
+import ca.rldesigns.casa.android.glass.CasaService;
+import ca.rldesigns.casa.android.glass.CasaService.CasaBinder;
 import ca.rldesigns.casa.android.glass.R;
+import ca.rldesigns.casa.android.glass.model.SavedPreference;
 import ca.rldesigns.casa.android.glass.util.ActionParams;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -46,13 +56,13 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * @author Sean Owen
- */
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
 	private static final String TAG = CaptureActivity.class.getSimpleName();
 	private static final String SCAN_ACTION = "com.google.zxing.client.android.SCAN";
+
+	private SharedPreferences savedSettings;
+	SharedPreferences.Editor editor;
 
 	private boolean hasSurface;
 	private boolean returnResult;
@@ -61,9 +71,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	private DecodeRunnable decodeRunnable;
 	private Result result;
 
+	private CasaService casaService;
+	boolean mBound = false;
+
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
+
+		savedSettings = getSharedPreferences(DATABASE_NAME, 0);
+		editor = savedSettings.edit();
 
 		// returnResult should be true if activity was started using startActivityForResult() with SCAN_ACTION intent
 		Intent intent = getIntent();
@@ -73,6 +89,29 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.capture);
 	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		Intent intent = new Intent(this, CasaService.class);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+	}
+
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			CasaBinder binder = (CasaBinder) service;
+			casaService = binder.getService();
+			mBound = true;
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mBound = false;
+		}
+
+	};
 
 	@Override
 	public synchronized void onResume() {
@@ -180,49 +219,67 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			String text = result.getText();
 			if (text != null) {
 				try {
+
 					JSONObject settings = new JSONObject(text);
 					String lat = (String) settings.get("y");
+					editor.putFloat(ApplicationData.SELECTED_LAT, Float.parseFloat(lat));
 					String lng = (String) settings.get("x");
-					Log.d("CASA", lat + ", " + lng);
-					ActionParams.SelectedLatLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+					editor.putFloat(ApplicationData.SELECTED_LNG, Float.parseFloat(lng));
+					LatLng selectedLatLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+					ActionParams.SelectedLatLng = selectedLatLng;
+
 					String date = (String) settings.get("d");
 					date = date.replace('.', '/');
-					Log.d("CASA", "date: " + date);
+					editor.putString(ApplicationData.START_DATE, date);
 					ActionParams.Date = date;
 
 					int priceMin = (int) settings.get("p-");
 					priceMin = priceMin * 500000;
+					editor.putInt(ApplicationData.PRICE_MIN, priceMin);
 					ActionParams.PriceMinValue = Integer.toString(priceMin);
-					Log.d("CASA", "priceMin: " + ActionParams.PriceMinValue);
 					int priceMax = (int) settings.get("p+");
 					priceMax = priceMax * 500000;
+					editor.putInt(ApplicationData.PRICE_MAX, priceMax);
 					ActionParams.PriceMaxValue = Integer.toString(priceMax);
-					Log.d("CASA", "priceMax: " + ActionParams.PriceMaxValue);
 
 					int bedroomMin = (int) settings.get("e-");
+					editor.putInt(ApplicationData.BEDROOM_MIN, bedroomMin);
 					ActionParams.BedroomMinValue = Integer.toString(bedroomMin);
-					Log.d("CASA", "bedroomMin: " + ActionParams.BedroomMinValue);
 					int bedroomMax = (int) settings.get("e+");
+					editor.putInt(ApplicationData.BEDROOM_MAX, bedroomMax);
 					ActionParams.BedroomMaxValue = Integer.toString(bedroomMax);
-					Log.d("CASA", "bedroomMax: " + ActionParams.BedroomMaxValue);
 
 					int bathroomMin = (int) settings.get("a-");
+					editor.putInt(ApplicationData.BATHROOM_MIN, bathroomMin);
 					ActionParams.BathroomMinValue = Integer.toString(bathroomMin);
-					Log.d("CASA", "bathroomMin: " + ActionParams.BathroomMinValue);
 					int bathroomMax = (int) settings.get("a+");
+					editor.putInt(ApplicationData.BATHROOM_MAX, bathroomMax);
 					ActionParams.BathroomMaxValue = Integer.toString(bathroomMax);
-					Log.d("CASA", "bathroomMax: " + ActionParams.BathroomMaxValue);
 
 					int storiesMin = (int) settings.get("s-");
+					editor.putInt(ApplicationData.STORIES_MIN, storiesMin);
 					ActionParams.StoriesMinValue = Integer.toString(storiesMin);
-					Log.d("CASA", "storiesMin: " + ActionParams.StoriesMinValue);
 					int storiesMax = (int) settings.get("s+");
+					editor.putInt(ApplicationData.STORIES_MAX, storiesMax);
 					ActionParams.StoriesMaxValue = Integer.toString(storiesMax);
-					Log.d("CASA", "storiesMax: " + ActionParams.StoriesMaxValue);
 
-					this.finish();
+					editor.putBoolean(ApplicationData.SETUP_DONE, true);
+					ActionParams.SetupDone = true;
+
+					editor.commit();
+
+					SavedPreference savedPreference = new SavedPreference(ActionParams.SelectedLatLng, ActionParams.Date, ActionParams.PriceMinValue,
+							ActionParams.PriceMaxValue, ActionParams.BedroomMinValue, ActionParams.BedroomMaxValue, ActionParams.BathroomMinValue,
+							ActionParams.BathroomMaxValue, ActionParams.StoriesMinValue, ActionParams.StoriesMaxValue);
+
+					ActionParams.savedPreference = savedPreference;
+
+					if (mBound) {
+						Log.d("CASA", "sending bind");
+						casaService.startLandmarks();
+						this.finish();
+					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Renderer implements DirectRenderingCallback {
 
-	private static final String TAG = Renderer.class.getSimpleName();
+	private static final String TAG = "CASA";
 
 	/**
 	 * The (absolute) pitch angle beyond which the app will display a message telling the user that his or her head is at too steep an angle to be
@@ -72,7 +72,7 @@ public class Renderer implements DirectRenderingCallback {
 
 		@Override
 		public void onLocationChanged(OrientationManager orientationManager) {
-			Location location = orientationManager.getLocation();
+			// Location location = orientationManager.getLocation();
 			Log.d(TAG, "onLocationChanged");
 			// List<Place> places = mLandmarks.getNearbyLandmarks(location.getLatitude(), location.getLongitude(), 5);
 			// mCasaView.setNearbyPlaces(places);

@@ -1,12 +1,9 @@
 package ca.rldesigns.casa.android.glass;
 
-import static ca.rldesigns.casa.android.glass.ApplicationData.DATABASE_NAME;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
@@ -15,9 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.lang.Runnable;
-import java.util.Calendar;
-
-import com.google.zxing.client.glass.CaptureActivity;
 
 import ca.rldesigns.casa.android.glass.model.Landmarks;
 import ca.rldesigns.casa.android.glass.util.ActionParams;
@@ -36,7 +30,6 @@ public class MenuActivity extends Activity {
 	private boolean mOptionsMenuOpen;
 	public Menu menu;
 	public Landmarks mLandmarks;
-	private SharedPreferences savedSettings;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
@@ -57,36 +50,8 @@ public class MenuActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		savedSettings = getSharedPreferences(DATABASE_NAME, 0);
 		Log.d("CASA", "onCreate");
 		bindService(new Intent(this, CasaService.class), mConnection, 0);
-	}
-
-	private void loadSettings() {
-		boolean setupDone = savedSettings.getBoolean(ApplicationData.SETUP_DONE, false);
-		if (!setupDone) {
-			Intent intentGetSettings = new Intent(this, CaptureActivity.class);
-			startActivityForResult(intentGetSettings, RequestCodes.REQUEST_SETTINGS);
-		} else {
-
-			String selectedAddress = savedSettings.getString(ApplicationData.SELECTED_ADDRESS, "");
-			ActionParams.SELECTED_ADDRESS = selectedAddress;
-
-			Calendar cal = Calendar.getInstance();
-			long oneYear = (long) 3.154E10;
-			cal.setTimeInMillis(cal.getTimeInMillis() - oneYear);
-			ActionParams.Year = savedSettings.getInt(ApplicationData.START_DATE_YEAR, cal.get(Calendar.YEAR));
-			ActionParams.MonthOfYear = savedSettings.getInt(ApplicationData.START_DATE_MONTH, cal.get(Calendar.MONTH));
-			ActionParams.DayOfMonth = savedSettings.getInt(ApplicationData.START_DATE_DAY, cal.get(Calendar.DAY_OF_MONTH));
-			ActionParams.PriceMinValue = Integer.toString(savedSettings.getInt(ApplicationData.PRICE_MIN, 0));
-			ActionParams.PriceMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.PRICE_MAX, 0));
-			ActionParams.BedroomMinValue = Integer.toString(savedSettings.getInt(ApplicationData.BEDROOM_MIN, 0));
-			ActionParams.BedroomMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.BEDROOM_MAX, 0));
-			ActionParams.BathroomMinValue = Integer.toString(savedSettings.getInt(ApplicationData.BATHROOM_MIN, 0));
-			ActionParams.BathroomMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.BATHROOM_MAX, 0));
-			ActionParams.StoriesMinValue = Integer.toString(savedSettings.getInt(ApplicationData.STORIES_MIN, 0));
-			ActionParams.StoriesMaxValue = Integer.toString(savedSettings.getInt(ApplicationData.STORIES_MAX, 0));
-		}
 	}
 
 	@Override
