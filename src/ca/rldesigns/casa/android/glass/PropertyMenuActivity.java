@@ -42,6 +42,8 @@ public class PropertyMenuActivity extends Activity {
 	private Card schoolCard;
 	private Card bikeStationCard;
 	private Card fireStationCard;
+	private Card ambulanceStationCard;
+	private Card policeStationCard;
 
 	private CardScrollView mCardScrollView;
 
@@ -81,8 +83,10 @@ public class PropertyMenuActivity extends Activity {
 		schoolCard = new Card(this);
 		bikeStationCard = new Card(this);
 		fireStationCard = new Card(this);
+		ambulanceStationCard = new Card(this);
+		policeStationCard = new Card(this);
 
-		getAdditionalInfo(mProperty, fireStationCard, bikeStationCard, schoolCard);
+		getAdditionalInfo(mProperty, fireStationCard, bikeStationCard, schoolCard, ambulanceStationCard, policeStationCard);
 	}
 
 	private class PropertyCardScrollAdapter extends CardScrollAdapter {
@@ -165,10 +169,10 @@ public class PropertyMenuActivity extends Activity {
 		finish();
 	}
 
-	private void getAdditionalInfo(Property property, Card fireStationCard, Card bikeStationCard, Card schoolCard) {
+	private void getAdditionalInfo(Property property, Card fireStationCard, Card bikeStationCard, Card schoolCard, Card ambulanceStationCard, Card policeStationCard) {
 		new MyAsyncTask().execute(this,
 				"http://conversationboard.com:8019/assessment?latitude=" + property.getLat() + "&longitude=" + property.getLng(), fireStationCard,
-				bikeStationCard, schoolCard);
+				bikeStationCard, schoolCard, ambulanceStationCard, policeStationCard);
 
 	}
 
@@ -176,6 +180,8 @@ public class PropertyMenuActivity extends Activity {
 		private Card fireStationCard;
 		private Card bikeStationCard;
 		private Card schoolCard;
+		private Card ambulanceStationCard;
+		private Card policeStationCard;
 
 		@Override
 		protected String doInBackground(Object... params) {
@@ -187,6 +193,9 @@ public class PropertyMenuActivity extends Activity {
 			fireStationCard = (Card) params[2];
 			bikeStationCard = (Card) params[3];
 			schoolCard = (Card) params[4];
+			ambulanceStationCard = (Card) params[5];
+			policeStationCard = (Card) params[6];
+			
 			try {
 				HttpResponse response = httpClient.execute(request);
 				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -212,10 +221,17 @@ public class PropertyMenuActivity extends Activity {
 				fireStationCard.setText("Closest Firestation:\n" + distance + "m");
 				mCards.add(fireStationCard);
 
+				
+				JSONObject ambulanceStation = obj.getJSONObject("ambulance_station");
+				String address = ambulanceStation.getString("EMS_ADDRES");
+				distance = ambulanceStation.getInt("distance");
+				ambulanceStationCard.setText("Closest Ambulance Station:\n" + address + "\n" + distance + "m");
+				mCards.add(ambulanceStationCard);				
+				
 				JSONObject bikeStation = obj.getJSONObject(("bike_station"));
 				String name = bikeStation.getString("stationName");
 				distance = bikeStation.getInt("distance");
-				bikeStationCard.setText("Closest Bixi Station:\n" + name + "\n" + distance + "m");
+				bikeStationCard.setText("Closest Bixi Stations:\n" + name + "\n" + distance + "m");
 				mCards.add(bikeStationCard);
 
 				JSONObject school = obj.getJSONObject("school");
@@ -223,6 +239,15 @@ public class PropertyMenuActivity extends Activity {
 				distance = school.getInt("distance");
 				schoolCard.setText("Closest School:\n" + name + "\n" + distance + "m");
 				mCards.add(schoolCard);
+				
+
+				
+				JSONObject policeStation = obj.getJSONObject("police_station");
+				address = policeStation.getString("FULL_ADDRE");
+				distance = policeStation.getInt("distance");
+				policeStationCard.setText("Closest Police Station:\n" + address + "\n" + distance +"m");
+				mCards.add(policeStationCard);
+				
 				mCardScrollView.activate();
 
 			} catch (JSONException e) {
