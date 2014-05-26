@@ -7,6 +7,8 @@ import ca.rldesigns.casa.android.glass.util.MathUtils;
 import ca.rldesigns.casa.android.glass.util.ResultCodes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -28,7 +30,12 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -261,25 +268,34 @@ public class Landmarks {
 					int icon = R.drawable.place_mark;
 					for (int i = 0; i < size; i++) {
 						property = properties.get(i);
+
 						if (i == 0) {
 							icon = R.drawable.yellow_mini;
-							ActionParams.firstProperty = properties.get(0);
+							ActionParams.firstProperty = properties.get(i);
+							ActionParams.firstProperty.setId(i);
 							ActionParams.firstProperty.setIcon(icon);
+							new DownloadImagesTask().execute(ActionParams.firstProperty);
 						}
 						if (i == 1) {
 							icon = R.drawable.blue_mini;
-							ActionParams.secondProperty = properties.get(1);
+							ActionParams.secondProperty = properties.get(i);
+							ActionParams.secondProperty.setId(i);
 							ActionParams.secondProperty.setIcon(icon);
+							new DownloadImagesTask().execute(ActionParams.secondProperty);
 						}
 						if (i == 2) {
 							icon = R.drawable.green_mini;
-							ActionParams.thirdProperty = properties.get(2);
+							ActionParams.thirdProperty = properties.get(i);
+							ActionParams.thirdProperty.setId(i);
 							ActionParams.thirdProperty.setIcon(icon);
+							new DownloadImagesTask().execute(ActionParams.thirdProperty);
 						}
 						if (i == 3) {
 							icon = R.drawable.red_mini;
-							ActionParams.fourthProperty = properties.get(3);
+							ActionParams.fourthProperty = properties.get(i);
+							ActionParams.fourthProperty.setId(i);
 							ActionParams.fourthProperty.setIcon(icon);
+							new DownloadImagesTask().execute(ActionParams.fourthProperty);
 						}
 						Log.d(TAG, "adding " + property.getAddress());
 						newPlace = new Place(icon, property.getLat(), property.getLng(), property.getAddress(), property.getPrice());
@@ -299,6 +315,48 @@ public class Landmarks {
 				e.printStackTrace();
 				Log.d(TAG, e.toString());
 				return false;
+			}
+		}
+	}
+
+	private class DownloadImagesTask extends AsyncTask<Property, Void, Bitmap> {
+		Property mProperty;
+
+		@Override
+		protected Bitmap doInBackground(Property... property) {
+			mProperty = property[0];
+			Bitmap bm = null;
+			try {
+				URL aURL = new URL(mProperty.getPicture());
+				URLConnection conn = aURL.openConnection();
+				conn.connect();
+				InputStream is = conn.getInputStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				bm = BitmapFactory.decodeStream(bis);
+				bis.close();
+				is.close();
+			} catch (IOException e) {
+				Log.e(TAG, "Error getting the image from server : " + e.getMessage().toString());
+			}
+			return bm;
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			int num = mProperty.getId();
+			switch (num) {
+			case 0:
+				ActionParams.firstProperty.setPictureBitmap(result);
+				break;
+			case 1:
+				ActionParams.secondProperty.setPictureBitmap(result);
+				break;
+			case 2:
+				ActionParams.thirdProperty.setPictureBitmap(result);
+				break;
+			case 3:
+				ActionParams.fourthProperty.setPictureBitmap(result);
+				break;
 			}
 		}
 	}

@@ -1,24 +1,16 @@
 package ca.rldesigns.casa.android.glass;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PropertyMenuActivity extends Activity {
-	private static final String TAG = "CASA";
+	public static final String TAG = "CASA";
 
 	private CasaService.CasaBinder mCasaService;
 	private boolean mAttachedToWindow;
@@ -53,45 +45,27 @@ public class PropertyMenuActivity extends Activity {
 
 	private CardScrollView mCardScrollView;
 
-	private LruCache<String, Bitmap> mMemoryCache;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Get max available VM memory, exceeding this amount will throw an OutOfMemory exception. Stored in kilobytes as LruCache takes an int in its
-		// constructor.
-		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-		// Use 1/8th of the available memory for this memory cache.
-		final int cacheSize = maxMemory / 8;
-
-		mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-			@Override
-			protected int sizeOf(String key, Bitmap bitmap) {
-				// The cache size will be measured in kilobytes rather than number of items.
-				return bitmap.getByteCount() / 1024;
-			}
-		};
-
 		mProperty = ActionParams.selectedProperty;
-		new DownloadImagesTask().execute(mProperty.getPicture());
+		// new DownloadImagesTask().execute(mProperty.getPicture());
 
 		mCards = new ArrayList<Card>();
 
 		card = new Card(this);
 		card.setText(mProperty.getAddress());
 		card.setFootnote(mProperty.getPrice());
-		card.addImage(R.drawable.gradient50);
+		// card.addImage(R.drawable.gradient50);
+		card.addImage(mProperty.getPictureBitmap());
 		mCards.add(card);
+
 		card = new Card(this);
 		card.setText(mProperty.getBedrooms() + " / " + mProperty.getBathrooms());
 		card.setFootnote("Bedrooms / Bathrooms");
 		card.setImageLayout(Card.ImageLayout.FULL);
-		card.addImage(R.drawable.gradient50);
-		/*
-		 * if (mProperty.getAddress().contains("60 SOUTH TOWN")) card.addImage(R.drawable.n2862962_1);
-		 */
+		card.addImage(mProperty.getPictureBitmap());
 		mCards.add(card);
 
 		createCards();
@@ -101,47 +75,6 @@ public class PropertyMenuActivity extends Activity {
 		mCardScrollView.setAdapter(adapter);
 		mCardScrollView.activate();
 		setContentView(mCardScrollView);
-	}
-
-	public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
-
-		@Override
-		protected Bitmap doInBackground(String... url) {
-			Bitmap bm = null;
-			try {
-				URL aURL = new URL(url[0]);
-				URLConnection conn = aURL.openConnection();
-				conn.connect();
-				InputStream is = conn.getInputStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				bm = BitmapFactory.decodeStream(bis);
-				bis.close();
-				is.close();
-			} catch (IOException e) {
-				Log.e(TAG, "Error getting the image from server : " + e.getMessage().toString());
-			}
-			return bm;
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			// imageView.setImageBitmap(result);
-			addBitmapToMemoryCache("1", result);
-			mCards.get(0).addImage(result);
-			mCards.get(1).addImage(result);
-		}
-	}
-
-	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-		if (getBitmapFromMemCache(key) == null) {
-			mMemoryCache.put(key, bitmap);
-			mCards.get(0).addImage(bitmap);
-			mCards.get(1).addImage(bitmap);
-		}
-	}
-
-	public Bitmap getBitmapFromMemCache(String key) {
-		return mMemoryCache.get(key);
 	}
 
 	private void createCards() {

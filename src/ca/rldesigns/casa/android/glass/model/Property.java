@@ -1,12 +1,16 @@
 package ca.rldesigns.casa.android.glass.model;
 
+import android.graphics.Bitmap;
+
 public class Property {
+	private int id;
 	private int icon;
 	private String address;
 	private String price;
 	private double lat;
 	private double lng;
 	private String picture;
+	private Bitmap pictureBitmap;
 	private String bedrooms;
 	private String bathrooms;
 
@@ -18,6 +22,14 @@ public class Property {
 		this.picture = picture;
 		this.bedrooms = bedrooms;
 		this.bathrooms = bathrooms;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getIcon() {
@@ -66,6 +78,14 @@ public class Property {
 
 	public void setPicture(String picture) {
 		this.picture = picture;
+	}
+
+	public Bitmap getPictureBitmap() {
+		return pictureBitmap;
+	}
+
+	public void setPictureBitmap(Bitmap pictureBitmap) {
+		this.pictureBitmap = pictureBitmap;
 	}
 
 	public String getBedrooms() {
