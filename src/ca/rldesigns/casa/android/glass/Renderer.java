@@ -144,7 +144,6 @@ public class Renderer implements DirectRenderingCallback {
 
 				if (mOrientationManager.hasLocation()) {
 					// Location location = mOrientationManager.getLocation();
-					Log.d(TAG, "updateRenderingState");
 					List<Place> nearbyPlaces = mLandmarks.getNearbyLandmarks(5);
 					mCasaView.setNearbyPlaces(nearbyPlaces);
 				}

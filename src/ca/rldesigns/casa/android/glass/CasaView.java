@@ -19,7 +19,6 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -33,7 +32,7 @@ import java.util.List;
  */
 public class CasaView extends View {
 
-	private static final String TAG = "CASA";
+	public static final String TAG = "CASA";
 
 	/** Various dimensions and other drawing-related constants. */
 	private static final float NEEDLE_WIDTH = 6;
@@ -308,7 +307,6 @@ public class CasaView extends View {
 					// directions. This means some places may not be drawn, even if they're nearby.
 					if (numberOfTries <= MAX_OVERLAPPING_PLACE_NAMES) {
 						mAllBounds.add(textBounds);
-						Log.d(TAG, "rendering: " + text);
 						if (placeBitmap == null) {
 							canvas.drawBitmap(mPlaceBitmap, offset + bearing * pixelsPerDegree - PLACE_PIN_WIDTH / 2, textBounds.top + 2, mPaint);
 						} else {

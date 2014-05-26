@@ -117,13 +117,9 @@ public class Landmarks {
 		}
 
 		protected String doInBackground(Object... params) {
-
-			Log.d(TAG, "doInBackground");
-
 			lat = (Double) params[1];
 			lon = (Double) params[2];
 
-			Log.d(TAG, "latlng: " + Double.toString(lat));
 			results = (Integer) params[3];
 			double delta = 0.025;
 			String data = "";
@@ -231,7 +227,6 @@ public class Landmarks {
 				jsonObject = new JSONObject(jsonString);
 				if (jsonObject.has("MapSearchResults")) {
 					JSONArray jArr = jsonObject.getJSONArray("MapSearchResults");
-					Log.d(TAG, "search result: " + Integer.toString(jArr.length()));
 					for (int i = 0; i < jArr.length(); i++) {
 						JSONObject obj = jArr.getJSONObject(i);
 						String address = obj.getString("Address");

@@ -75,7 +75,6 @@ public class PropertyMenuActivity extends Activity {
 		};
 
 		mProperty = ActionParams.selectedProperty;
-		Log.d(TAG, mProperty.getPicture());
 		new DownloadImagesTask().execute(mProperty.getPicture());
 
 		mCards = new ArrayList<Card>();

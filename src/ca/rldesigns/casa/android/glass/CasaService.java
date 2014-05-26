@@ -82,7 +82,6 @@ public class CasaService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d("CASA", "onCreate Service");
 		// Even though the text-to-speech engine is only used in response to a menu action, we
 		// initialize it when the application starts so that we avoid delays that could occur
 		// if we waited until it was needed to start it up.
@@ -109,8 +108,6 @@ public class CasaService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (mLiveCard == null) {
-			Log.d("CASA", "onStartCommand");
-
 			mLiveCard = new LiveCard(this, LIVE_CARD_TAG);
 			mRenderer = new Renderer(this, mOrientationManager, mLandmarks);
 			mLiveCard.setDirectRenderingEnabled(true).getSurfaceHolder().addCallback(mRenderer);
