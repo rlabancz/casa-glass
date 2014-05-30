@@ -347,6 +347,9 @@ public class Landmarks {
 			case 3:
 				ActionParams.fourthProperty.setPictureBitmap(result);
 				break;
+			case 4:
+				ActionParams.fifthProperty.setPictureBitmap(result);
+				break;
 			}
 		}
 	}
